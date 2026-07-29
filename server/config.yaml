@@ -18,7 +18,7 @@ es:
     is_console_print: true
 gaode:
     enable: false
-    key: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    key: f1cfe83d3a95a5bd41899de90d9bd5f1
 jwt:
     access_token_secret: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
     refresh_token_secret: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -31,7 +31,7 @@ mysql:
     config: charset=utf8mb4&parseTime=True&loc=Local
     db_name: blog_db
     username: root
-    password: root
+    password: 620WFwf0111!
     max_idle_conns: 10
     max_open_conns: 100
     log_mode: info

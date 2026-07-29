@@ -20,6 +20,7 @@ type Mysql struct {
 }
 
 func (m Mysql) Dsn() string {
+	//fmt.Println(m.Username + ":" + m.Password + "@tcp(" + m.Host + ":" + strconv.Itoa(m.Port) + ")/" + m.DBName + "?" + m.Config)
 	return m.Username + ":" + m.Password + "@tcp(" + m.Host + ":" + strconv.Itoa(m.Port) + ")/" + m.DBName + "?" + m.Config
 }
 
