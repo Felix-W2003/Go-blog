@@ -3,3 +3,5 @@
 {"level":"ERROR","time":"2026-07-29T16:25:53.585+0800","caller":"initialize/gorm.go:22","msg":"Failed to connect to MySQL:","error":"Error 1045 (28000): Access denied for user 'root'@'localhost' (using password: YES)"}
 {"level":"INFO","time":"2026-07-29T16:30:40.329+0800","caller":"core/server.go:25","msg":"server run success on ","address":"0.0.0.0:8080"}
 {"level":"INFO","time":"2026-07-29T16:30:40.329+0800","caller":"initialize/cron.go:18","msg":"start","keysAndValues":null}
+{"level":"INFO","time":"2026-07-29T17:18:27.470+0800","caller":"core/server.go:25","msg":"server run success on ","address":"0.0.0.0:8080"}
+{"level":"INFO","time":"2026-07-29T17:18:27.470+0800","caller":"initialize/cron.go:18","msg":"start","keysAndValues":null}
