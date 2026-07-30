@@ -5,3 +5,25 @@
 {"level":"INFO","time":"2026-07-29T16:30:40.329+0800","caller":"initialize/cron.go:18","msg":"start","keysAndValues":null}
 {"level":"INFO","time":"2026-07-29T17:18:27.470+0800","caller":"core/server.go:25","msg":"server run success on ","address":"0.0.0.0:8080"}
 {"level":"INFO","time":"2026-07-29T17:18:27.470+0800","caller":"initialize/cron.go:18","msg":"start","keysAndValues":null}
+{"level":"ERROR","time":"2026-07-30T09:00:39.858+0800","caller":"initialize/redis.go:25","msg":"Failed to connect to Redis:","error":"dial tcp 127.0.0.1:6379: connectex: No connection could be made because the target machine actively refused it."}
+{"level":"INFO","time":"2026-07-30T09:02:27.391+0800","caller":"core/server.go:25","msg":"server run success on ","address":"0.0.0.0:8080"}
+{"level":"INFO","time":"2026-07-30T09:02:27.390+0800","caller":"initialize/cron.go:18","msg":"start","keysAndValues":null}
+{"level":"INFO","time":"2026-07-30T10:46:03.424+0800","caller":"core/server.go:25","msg":"server run success on ","address":"0.0.0.0:8080"}
+{"level":"INFO","time":"2026-07-30T10:46:03.424+0800","caller":"initialize/cron.go:18","msg":"start","keysAndValues":null}
+{"level":"INFO","time":"2026-07-30T10:50:08.983+0800","caller":"core/server.go:25","msg":"server run success on ","address":"0.0.0.0:8080"}
+{"level":"INFO","time":"2026-07-30T10:50:08.983+0800","caller":"initialize/cron.go:18","msg":"start","keysAndValues":null}
+{"level":"INFO","time":"2026-07-30T10:50:11.514+0800","caller":"core/server.go:25","msg":"server run success on ","address":"0.0.0.0:8080"}
+{"level":"INFO","time":"2026-07-30T10:50:11.514+0800","caller":"initialize/cron.go:18","msg":"start","keysAndValues":null}
+{"level":"INFO","time":"2026-07-30T10:52:25.171+0800","caller":"core/server.go:25","msg":"server run success on ","address":"0.0.0.0:8080"}
+{"level":"INFO","time":"2026-07-30T10:52:25.171+0800","caller":"initialize/cron.go:18","msg":"start","keysAndValues":null}
+{"level":"INFO","time":"2026-07-30T10:52:39.388+0800","caller":"core/server.go:25","msg":"server run success on ","address":"0.0.0.0:8080"}
+{"level":"INFO","time":"2026-07-30T10:52:39.388+0800","caller":"initialize/cron.go:18","msg":"start","keysAndValues":null}
+{"level":"INFO","time":"2026-07-30T10:53:01.846+0800","caller":"core/server.go:25","msg":"server run success on ","address":"0.0.0.0:8080"}
+{"level":"INFO","time":"2026-07-30T10:53:01.846+0800","caller":"initialize/cron.go:18","msg":"start","keysAndValues":null}
+{"level":"INFO","time":"2026-07-30T10:53:19.861+0800","caller":"core/server.go:25","msg":"server run success on ","address":"0.0.0.0:8080"}
+{"level":"INFO","time":"2026-07-30T10:53:19.861+0800","caller":"initialize/cron.go:18","msg":"start","keysAndValues":null}
+{"level":"INFO","time":"2026-07-30T10:53:55.560+0800","caller":"core/server.go:25","msg":"server run success on ","address":"0.0.0.0:8080"}
+{"level":"INFO","time":"2026-07-30T10:53:55.560+0800","caller":"initialize/cron.go:18","msg":"start","keysAndValues":null}
+{"level":"INFO","time":"2026-07-30T11:00:53.303+0800","caller":"flag/enter.go:62","msg":"Successfully created table structure"}
+{"level":"INFO","time":"2026-07-30T13:47:34.331+0800","caller":"core/server.go:25","msg":"server run success on ","address":"0.0.0.0:8080"}
+{"level":"INFO","time":"2026-07-30T13:47:34.330+0800","caller":"initialize/cron.go:18","msg":"start","keysAndValues":null}

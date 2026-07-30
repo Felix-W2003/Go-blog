@@ -18,6 +18,7 @@ func InitGorm() *gorm.DB {
 	db, err := gorm.Open(mysql.Open(mysqlCfg.Dsn()), &gorm.Config{
 		Logger: logger.Default.LogMode(mysqlCfg.LogLevel()), // 设置日志级别
 	})
+	//fmt.Println(db, err)
 	if err != nil {
 		global.Log.Error("Failed to connect to MySQL:", zap.Error(err))
 		os.Exit(1)

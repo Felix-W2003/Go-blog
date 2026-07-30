@@ -10,6 +10,17 @@ import (
 	"go.uber.org/zap/zapcore"
 )
 
+// getLogWriter 返回一个 zapcore.WriteSyncer，该写入器利用 lumberjack 包，实现日志的滚动记录
+func getLogWriter(filename string, maxSize, maxBackups, maxAge int) zapcore.WriteSyncer {
+	lumberJackLogger := &lumberjack.Logger{
+		Filename:   filename,   // 日志文件的位置
+		MaxSize:    maxSize,    // 在进行切割之前，日志文件的最大大小（以MB为单位）
+		MaxBackups: maxBackups, // 保留旧文件的最大个数
+		MaxAge:     maxAge,     // 保留旧文件的最大天数
+	}
+	return zapcore.AddSync(lumberJackLogger)
+}
+
 // InitLogger 初始化并返回一个基于配置设置的新 zap.Logger 实例
 func InitLogger() *zap.Logger {
 	zapCfg := global.Config.Zap
@@ -36,17 +47,6 @@ func InitLogger() *zap.Logger {
 	core := zapcore.NewCore(encoder, writeSyncer, logLevel)
 	logger := zap.New(core, zap.AddCaller())
 	return logger
-}
-
-// getLogWriter 返回一个 zapcore.WriteSyncer，该写入器利用 lumberjack 包，实现日志的滚动记录
-func getLogWriter(filename string, maxSize, maxBackups, maxAge int) zapcore.WriteSyncer {
-	lumberJackLogger := &lumberjack.Logger{
-		Filename:   filename,   // 日志文件的位置
-		MaxSize:    maxSize,    // 在进行切割之前，日志文件的最大大小（以MB为单位）
-		MaxBackups: maxBackups, // 保留旧文件的最大个数
-		MaxAge:     maxAge,     // 保留旧文件的最大天数
-	}
-	return zapcore.AddSync(lumberJackLogger)
 }
 
 // getEncoder 返回一个为生产日志配置的 JSON 编码器
