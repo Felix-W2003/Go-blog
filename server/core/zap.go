@@ -46,6 +46,9 @@ func InitLogger() *zap.Logger {
 	// 创建核心和日志实例
 	core := zapcore.NewCore(encoder, writeSyncer, logLevel)
 	logger := zap.New(core, zap.AddCaller())
+
+	zap
+
 	return logger
 }
 
