@@ -47,8 +47,6 @@ func InitLogger() *zap.Logger {
 	core := zapcore.NewCore(encoder, writeSyncer, logLevel)
 	logger := zap.New(core, zap.AddCaller())
 
-	zap
-
 	return logger
 }
 
