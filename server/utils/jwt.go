@@ -119,3 +119,37 @@ func (j *JWT) parseToken(tokenString string, claims jwt.Claims, secretKey interf
 	}
 	return nil, TokenInvalid // Token 无效，返回错误
 }
+
+/*
+输入: tokenString = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMjN9.signature"
+                    ↓
+┌─────────────────────────────────────────────────────────────┐
+│ jwt.ParseWithClaims 执行:                                  │
+│                                                             │
+│ 1. 分割 token → [header, payload, signature]              │
+│ 2. Base64 解码 header → 获取算法 "HS256"                  │
+│ 3. 调用回调函数 → 返回 secretKey                          │
+│ 4. 用 HS256 + secretKey 重新计算签名                      │
+│ 5. 对比计算的签名 vs 传入的 signature                     │
+│    ├─ 不一致 → err = ValidationError{SignatureInvalid}   │
+│    └─ 一致 → 继续                                        │
+│ 6. Base64 解码 payload → 填充到 claims 参数              │
+│ 7. 验证 exp（过期时间）                                   │
+│    ├─ 当前时间 > exp → err = ValidationError{Expired}    │
+│    └─ 当前时间 ≤ exp → 继续                             │
+│ 8. 验证 nbf（生效时间）                                   │
+│    ├─ 当前时间 < nbf → err = ValidationError{NotValidYet}│
+│    └─ 当前时间 ≥ nbf → 继续                             │
+│ 9. 返回 token（包含 Claims 和 Valid 标志）               │
+└─────────────────────────────────────────────────────────────┘
+                    ↓
+            err != nil ? ── 是 ──→ 错误分类处理
+                    │
+                    否
+                    ↓
+            token.Valid ? ── 否 ──→ 返回 TokenInvalid
+                    │
+                    是
+                    ↓
+            返回 token.Claims（成功！）
+*/
