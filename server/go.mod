@@ -14,7 +14,7 @@ require (
 	github.com/jordan-wright/email v4.0.1-0.20210109023952-943e75fe5223+incompatible
 	github.com/mojocn/base64Captcha v1.3.8
 	github.com/natefinch/lumberjack v2.0.0+incompatible
-	github.com/qiniu/go-sdk/v7 v7.26.18
+	github.com/qiniu/go-sdk/v7 v7.27.0
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/songzhibin97/gkit v1.4.0
 	github.com/ua-parser/uap-go v0.0.0-20260529044130-17c35e68e58c
@@ -66,6 +66,9 @@ require (
 	github.com/quic-go/qpack v0.6.0 // indirect
 	github.com/quic-go/quic-go v0.59.0 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
+	github.com/tidwall/gjson v1.19.0 // indirect
+	github.com/tidwall/match v1.1.1 // indirect
+	github.com/tidwall/pretty v1.2.0 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.3.1 // indirect
 	go.mongodb.org/mongo-driver/v2 v2.5.0 // indirect
