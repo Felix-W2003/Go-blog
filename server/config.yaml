@@ -13,8 +13,8 @@ email:
     is_ssl: true
 es:
     url: http://127.0.0.1:9200
-    username: ""
-    password: ""
+    username: "elastic"
+    password: "620WFwf0111"
     is_console_print: true
 gaode:
     enable: false
