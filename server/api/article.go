@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"server/global"
 	"server/model/request"
 	"server/model/response"
@@ -15,8 +16,12 @@ type ArticleApi struct {
 
 // ArticleInfoByID 根据文章id获取文章内容
 func (articleApi *ArticleApi) ArticleInfoByID(c *gin.Context) {
+	rawId := c.Param("id")
+	fmt.Println("-------原生路由参数id：", rawId)
 	var req request.ArticleInfoByID
+	// fmt.Println("---绑定前url:", req, "-------")
 	err := c.ShouldBindUri(&req)
+	fmt.Println("---绑定后url:", req, "-------")
 	if err != nil {
 		response.FailWithMessage(err.Error(), c)
 		return
