@@ -35,8 +35,7 @@
   min-height: 100vh;
   background: $white;
   color: $black;
-  width: 80%;
-  margin: 0 auto;
+
 }
 
 // 导航栏

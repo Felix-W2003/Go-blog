@@ -14,6 +14,144 @@
   </div>
 </template>
 
+
+
+<style scoped lang="scss">
+.web-navbar {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  height: 68px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 100;
+  color: #aaa;
+  background: #1c1c1c;
+  border-bottom: 1px solid #2d2d2d;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+  transition: all 0.35s ease;
+
+  .container {
+    display: flex;
+    align-items: center;
+    max-width: 1400px;
+    width: 100%;
+    height: 68px;
+
+    .logo {
+      width: 200px;
+      height: 60px;
+    }
+
+    .web-menu {
+      margin-left: 20px;
+
+      .el-menu {
+        height: 68px;
+        background: transparent !important;
+        border: none !important;
+
+        .el-menu-item {
+          position: relative;
+          height: 68px;
+          line-height: 68px;
+          padding: 0 18px;
+          border: none !important;
+          background: transparent !important;
+
+          color: #aaa !important;
+          font-size: 16px;
+          font-weight: 400;
+          letter-spacing: 0.5px;
+
+          transition: color 0.25s ease, transform 0.25s ease;
+
+          &:hover {
+            color: #fff !important;
+            background: transparent !important;
+            transform: translateY(-1px);
+          }
+
+          &::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: 12px;
+            width: 0;
+            height: 2px;
+            background: #fff;
+            border-radius: 2px;
+            transform: translateX(-50%);
+            transition: width 0.3s ease;
+          }
+
+          &:hover::after {
+            width: 28px;
+          }
+
+          &.is-active {
+            color: #fff !important;
+            background: transparent !important;
+
+            &::after {
+              width: 28px;
+              background: #fff;
+            }
+          }
+        }
+      }
+    }
+
+    .auth-popover {
+      margin-left: auto;
+      margin-top: auto;
+      margin-bottom: auto;
+      padding-right: 20px;
+    }
+  }
+
+  // ============================
+  // 滚动后的导航栏
+  // ============================
+
+  &.show {
+    background: rgba(255, 255, 255, 0.96);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+
+    .container {
+      margin-top: 0;
+    }
+
+    .web-menu {
+      .el-menu {
+        .el-menu-item {
+          color: #555 !important;
+          background: transparent !important;
+
+          &:hover {
+            color: #111 !important;
+            background: transparent !important;
+          }
+
+          &.is-active {
+            color: #111 !important;
+            background: transparent !important;
+
+            &::after {
+              background: #111;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+</style>
 <script setup lang="ts">
 import AuthPopover from "@/components/common/AuthPopover.vue";
 import Logo from "@/components/widgets/Logo.vue";
@@ -72,62 +210,3 @@ const menuList: MenuItem[] = [
 ]
 
 </script>
-
-
-<style scoped lang="scss">
-.web-navbar {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-  position: fixed;
-  z-index: 6;
-  color: dimgray;
-  --el-menu-text-color: dimgray;
-  --color: dimgray;
-
-  &.show {
-    top: 0;
-    background-color: white;
-    color: black;
-    --el-menu-text-color: black;
-    --color: black;
-
-    .container {
-      margin-top: 8px;
-    }
-  }
-
-  .container {
-    display: flex;
-    max-width: 1400px;
-    width: 100%;
-
-    .logo {
-      height: 60px;
-      width: 200px;
-    }
-
-    .web-menu {
-      margin-left: 20px;
-
-      .el-menu {
-        background-color: transparent;
-        border-bottom: none;
-        --el-menu-item-font-size: 20px;
-
-        .el-menu-item {
-          border-bottom: none;
-          background-color: transparent;
-        }
-      }
-    }
-
-    .auth-popover {
-      margin-left: auto;
-      margin-top: auto;
-      margin-bottom: auto;
-      padding-right: 20px;
-    }
-  }
-}
-</style>

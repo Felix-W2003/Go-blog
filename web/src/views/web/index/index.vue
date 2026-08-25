@@ -43,6 +43,7 @@ import Feedback from "@/components/pages/Feedback.vue";
 
     .container {
       display: flex;
+      margin-top: 80px;
       max-width: 1400px;
       width: 100%;
 

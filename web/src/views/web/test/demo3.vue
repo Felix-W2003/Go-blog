@@ -3,7 +3,7 @@
     <!-- Hero 头部区域，带网格背景 -->
     <section class="hero">
       <div class="hero-content">
-        <h1 class="hero-title">记录思考与生活1</h1>
+        <h1 class="hero-title">记录思考与生活3</h1>
         <p class="hero-sub">Design · Code · Life</p>
       </div>
       <div class="grid-bg"></div>
@@ -35,7 +35,6 @@
   min-height: 100vh;
   background: $white;
   color: $black;
-  width: 80%;
   margin: 0 auto;
 }
 
