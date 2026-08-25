@@ -13,8 +13,8 @@ email:
     is_ssl: true
 es:
     url: http://127.0.0.1:9200
-    username: "elastic"
-    password: "620WFwf0111"
+    username: elastic
+    password: 620WFwf0111
     is_console_print: true
 gaode:
     enable: false
@@ -45,9 +45,9 @@ qiniu:
     use_cdn_domains: true
 qq:
     enable: false
-    app_id: "000000000"
-    app_key: xxxxxxxxxxxxxxxx
-    redirect_uri: http://xxx.xxx/xxx
+    app_id: wangjinrui@reliachina.com
+    app_key: ""
+    redirect_uri: ""
 redis:
     address: 127.0.0.1:6379
     password: ""
@@ -57,9 +57,9 @@ system:
     port: 8080
     env: release
     router_prefix: api
-    use_multipoint: true
-    sessions_secret: lRWQp8KULecRAGmoq2wDGWjPKjbMRMtY8oFehOnT9Ts=
-    oss_type: local
+    use_multipoint: false
+    sessions_secret: 620WFwf0111
+    oss_type: ""
 upload:
     size: 20
     path: uploads
