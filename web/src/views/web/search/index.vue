@@ -1,6 +1,6 @@
 <template>
   <div class="search">
-    <web-navbar :noScroll="true"/>
+   <WebNavbar />
     <el-container class="main-content">
       <div class="container">
         <el-main>

@@ -1,149 +1,802 @@
 <template>
+
   <div class="about">
-    <web-navbar :noScroll="true"/>
+
+
+    <WebNavbar />
+
+
     <el-container class="main-content">
+
+
       <div class="container">
-        <el-main>
-          <MdPreview :modelValue="text"/>
-        </el-main>
+
+
+        <!-- 个人介绍 -->
+
+        <section class="hero">
+
+
+          <h1>
+            FELIX
+          </h1>
+
+
+          <p>
+            Full Stack Developer
+          </p>
+
+
+          <span>
+            Technology · Creation · Exploration
+          </span>
+
+
+        </section>
+
+
+
+
+        <!-- 关于我 -->
+
+
+        <section class="card">
+
+
+          <h2>
+            ABOUT ME
+          </h2>
+
+
+          <p>
+            我是一名专注于后端开发的程序员，
+            喜欢研究 Web 技术、系统架构以及高性能服务。
+          </p>
+
+
+          <p>
+            目前主要使用 Go 语言进行后端开发，
+            同时掌握 Vue3 前端生态，
+            致力于构建高性能、可扩展的 Web 应用。
+          </p>
+
+
+        </section>
+
+
+
+
+
+        <!-- 技术栈 -->
+
+
+        <section class="card">
+
+
+          <h2>
+            TECH STACK
+          </h2>
+
+
+
+
+          <div class="tech-grid">
+
+
+
+            <div
+                class="tech-item"
+                v-for="item in techStack"
+                :key="item.title"
+            >
+
+
+              <h3>
+                {{item.title}}
+              </h3>
+
+
+              <p>
+                {{item.desc}}
+              </p>
+
+
+              <div class="tags">
+
+
+                <span
+                    v-for="tag in item.tags"
+                    :key="tag"
+                >
+
+                  {{tag}}
+
+                </span>
+
+
+              </div>
+
+
+
+            </div>
+
+
+
+          </div>
+
+
+        </section>
+
+
+
+
+
+        <!-- 项目能力 -->
+
+
+        <section class="card">
+
+
+          <h2>
+            DEVELOPMENT EXPERIENCE
+          </h2>
+
+
+          <ul>
+
+
+            <li>
+              后端 API 服务开发
+            </li>
+
+
+            <li>
+              RESTful API 设计
+            </li>
+
+
+            <li>
+              MySQL 数据库设计与优化
+            </li>
+
+
+            <li>
+              Redis 缓存设计
+            </li>
+
+
+            <li>
+              Elasticsearch 搜索服务
+            </li>
+
+
+            <li>
+              Linux + Docker 项目部署
+            </li>
+
+
+          </ul>
+
+
+        </section>
+
+
+
+
+
+
       </div>
+
+
     </el-container>
+
+
+
   </div>
+
+
 </template>
 
+
+
+
+
 <script setup lang="ts">
+
+
 import WebNavbar from "@/components/layout/WebNavbar.vue";
-import {MdPreview} from "md-editor-v3";
-import {ref} from "vue";
 
-const text=ref(`# 后端技术栈（Gin）
 
-## Web 框架：
 
-Gin (github.com/gin-gonic/gin):
-这是一个高性能的 Go web 框架，用于构建 RESTful API 和 Web 服务。
-Gin-Contrib (github.com/gin-contrib/sessions):
-提供会话管理支持。
+const techStack = [
 
-## 数据库：
 
-GORM (gorm.io/gorm, gorm.io/driver/mysql):
-一个用于 Go 的 ORM（对象关系映射）库，配合 MySQL 数据库使用。
-MySQL：使用 GORM 连接 MySQL 数据库。
 
-## 身份验证和授权：
+  {
 
-JWT (JSON Web Tokens) (github.com/golang-jwt/jwt/v4):
-用于生成和解析 JWT token，提供用户身份验证和授权功能。
 
-## Redis：
+    title:"Backend",
 
-Go-Redis (github.com/go-redis/redis):
-用于与 Redis 数据库进行通信，常用于缓存和会话存储。
 
-## 日志：
+    desc:"高性能后端服务开发",
 
-Zap (go.uber.org/zap):
-Uber 提供的高性能日志库。
 
-## 邮件发送：
+    tags:[
 
-Email (github.com/jordan-wright/email):
-用于在应用中发送电子邮件。
+      "Go",
 
-## 任务调度：
+      "Gin",
 
-Cron (github.com/robfig/cron/v3):
-用于管理定时任务的库。
+      "GORM",
 
-## 文件上传：
+      "JWT",
 
-Qiniu SDK (github.com/qiniu/go-sdk/v7):
-用于与七牛云存储服务进行集成，支持文件上传。
+      "Redis",
 
-## 验证码：
+      "MySQL",
 
-Base64Captcha (github.com/mojocn/base64Captcha):
-用于生成和验证图形验证码。
+      "Elasticsearch"
 
-## Elasticsearch：
+    ]
 
-Elastic-Transport Go 和 Go Elasticsearch (github.com/elastic/elastic-transport-go/v8, github.com/elastic/go-elasticsearch/v8):
-用于集成 Elasticsearch 搜索引擎。
+  },
 
-# 前端技术栈（Vue3+Ts+Setup）
 
-## Vue 3 (vue):
 
-使用 Vue 3 作为前端框架，提供响应式数据绑定和组件化开发。
 
-## Vite (vite):
+  {
 
-一个现代的前端构建工具，用于快速开发和构建 Vue 项目。
 
-## Pinia (pinia):
+    title:"Frontend",
 
-Vue 3 的状态管理库，类似于 Vuex，但 API 更加简洁。
 
-## Vue Router (vue-router):
+    desc:"现代化 Web 前端开发",
 
-用于 Vue 应用的路由管理。
 
-## Element Plus (element-plus):
+    tags:[
 
-基于 Vue 3 的 UI 组件库，提供丰富的用户界面组件。
+      "Vue3",
 
-## Axios (axios):
+      "TypeScript",
 
-一个基于 Promise 的 HTTP 客户端，用于与后端 API 进行通信。
+      "Vite",
 
-## ECharts (echarts):
+      "Pinia",
 
-一个开源的可视化图表库，支持多种图表类型，适用于数据展示。
+      "Element Plus",
 
-## Sass (sass):
+      "ECharts"
 
-一种 CSS 预处理器，用于编写更具结构化和可维护性的 CSS。
-开发工具和其他依赖
+    ]
 
-## TypeScript (typescript):
 
-项目使用 TypeScript 增强 JavaScript 的类型系统，提升代码的可靠性。
+  },
 
-## Vite 插件 (@vitejs/plugin-vue):
 
-Vite 的 Vue 插件，用于支持 Vue 单文件组件的构建和热重载。
 
-## 自动导入插件 (unplugin-auto-import, unplugin-vue-components):
 
-通过自动导入，减少手动导入模块的需要，简化开发过程。
 
-## Vue Type Checking (vue-tsc):
+  {
 
-TypeScript 与 Vue 配合的类型检查工具，确保在开发过程中发现类型问题。
 
-# 总结
+    title:"DevOps",
 
-后端使用了 Go 语言、Gin 框架、GORM ORM、JWT、Redis、Elasticsearch、Zap 日志等技术栈，主要用于构建高性能的 RESTful API 服务。
-前端使用了 Vue 3、Vite、Pinia、Element Plus、ECharts 等技术栈，提供一个现代化、响应式的 Web 前端。
-其他工具包括 TypeScript、Sass 和各种辅助库，增强了开发体验和代码质量。
-这个项目集成了现代的后端和前端技术栈，适用于构建一个高效且易于扩展的博客或管理系统。
 
-`)
+    desc:"服务器部署与工程化",
+
+
+    tags:[
+
+      "Linux",
+
+      "Docker",
+
+      "Nginx",
+
+      "Git",
+
+      "CI/CD"
+
+    ]
+
+
+  }
+
+
+
+
+];
+
+
+
 </script>
 
-<style scoped lang="scss">
-.about {
-  .main-content {
-    margin-top: 70px;
-    display: flex;
-    justify-content: center;
 
-    .container {
-      display: flex;
-      max-width: 1400px;
-      width: 100%;
-    }
-  }
+
+
+
+
+
+<style scoped lang="scss">
+
+
+.about{
+
+
+  min-height:100vh;
+
+
+  background:#050505;
+
+
+
+  color:white;
+
+
+
+
 }
+
+
+
+
+.main-content{
+
+
+  margin-top:70px;
+
+
+  display:flex;
+
+
+  justify-content:center;
+
+
+
+}
+
+
+
+
+
+.container{
+
+
+  width:100%;
+
+
+  max-width:1200px;
+
+
+  padding:40px;
+
+
+
+}
+
+
+
+
+
+
+
+.hero{
+
+
+  text-align:center;
+
+
+  padding:80px 0;
+
+
+  animation:fade .8s ease;
+
+
+
+  h1{
+
+
+    font-size:80px;
+
+
+    letter-spacing:20px;
+
+
+    margin:0;
+
+
+
+    background:
+
+    linear-gradient(
+        90deg,
+        white,
+        #666
+    );
+
+
+    -webkit-background-clip:text;
+
+
+    color:transparent;
+
+
+
+  }
+
+
+
+  p{
+
+
+    margin-top:20px;
+
+
+    font-size:28px;
+
+
+    color:#aaa;
+
+
+
+  }
+
+
+
+  span{
+
+
+    color:#666;
+
+
+    letter-spacing:5px;
+
+
+  }
+
+
+
+}
+
+
+
+
+
+
+
+
+.card{
+
+
+  margin-bottom:40px;
+
+
+  padding:40px;
+
+
+
+  border-radius:20px;
+
+
+
+  background:
+
+  rgba(255,255,255,.04);
+
+
+
+  border:
+
+  1px solid rgba(255,255,255,.1);
+
+
+
+  backdrop-filter:
+
+  blur(20px);
+
+
+
+  animation:
+
+  fadeUp .8s ease;
+
+
+
+  transition:.3s;
+
+
+
+
+  &:hover{
+
+
+    transform:
+
+    translateY(-8px);
+
+
+
+    border-color:
+
+    rgba(255,255,255,.4);
+
+
+
+  }
+
+
+
+  h2{
+
+
+    font-size:28px;
+
+
+    letter-spacing:6px;
+
+
+    margin-bottom:30px;
+
+
+  }
+
+
+
+  p{
+
+
+    color:#aaa;
+
+
+    line-height:2;
+
+
+    font-size:16px;
+
+
+  }
+
+
+
+}
+
+
+
+
+
+
+
+.tech-grid{
+
+
+  display:grid;
+
+
+  grid-template-columns:
+
+  repeat(3,1fr);
+
+
+  gap:25px;
+
+
+}
+
+
+
+
+
+
+
+.tech-item{
+
+
+  padding:30px;
+
+
+  background:#0d0d0d;
+
+
+  border-radius:15px;
+
+
+
+  transition:.3s;
+
+
+
+  &:hover{
+
+
+    transform:
+
+    translateY(-10px);
+
+
+
+  }
+
+
+
+  h3{
+
+
+    font-size:22px;
+
+
+  }
+
+
+
+
+}
+
+
+
+
+
+
+
+.tags{
+
+
+  display:flex;
+
+
+  flex-wrap:wrap;
+
+
+  gap:10px;
+
+
+
+  span{
+
+
+    padding:
+
+    6px 14px;
+
+
+    border-radius:20px;
+
+
+    background:#181818;
+
+
+    border:
+
+    1px solid #333;
+
+
+    color:#ccc;
+
+
+    font-size:13px;
+
+
+
+  }
+
+
+
+}
+
+
+
+
+
+
+ul{
+
+
+  padding-left:20px;
+
+
+  color:#aaa;
+
+
+  line-height:2.5;
+
+
+
+}
+
+
+
+
+
+
+
+
+@keyframes fade{
+
+
+  from{
+
+    opacity:0;
+
+  }
+
+
+  to{
+
+    opacity:1;
+
+  }
+
+}
+
+
+
+
+@keyframes fadeUp{
+
+
+  from{
+
+
+    opacity:0;
+
+
+    transform:
+
+    translateY(40px);
+
+
+  }
+
+
+  to{
+
+
+    opacity:1;
+
+
+    transform:
+
+    translateY(0);
+
+
+
+  }
+
+
+}
+
+
+
+
+
+
+@media(max-width:900px){
+
+
+  .tech-grid{
+
+
+    grid-template-columns:
+
+    1fr;
+
+
+  }
+
+
+
+  .hero h1{
+
+
+    font-size:50px;
+
+
+  }
+
+
+}
+
+
+
+
 </style>

@@ -54,6 +54,38 @@ const routes = [
               meta: {
                   title: "demo"
               }
+          },
+            {
+            path: "heropage01",
+              name: "heropage01",
+              component: () => import('@/views/web/test/HeroPage01.vue'),
+              meta: {
+                  title: "heropage01"
+              }
+          },
+           {
+            path: "heropage02",
+              name: "heropage02",
+              component: () => import('@/views/web/test/HeroPage02.vue'),
+              meta: {
+                  title: "heropage02"
+              }
+          },
+           {
+            path: "heropage03",
+              name: "heropage03",
+              component: () => import('@/views/web/test/HeroPage03.vue'),
+              meta: {
+                  title: "heropage03"
+              }
+          },
+          {
+            path: "heropage04",
+              name: "heropage04",
+              component: () => import('@/views/web/test/HeroPage04.vue'),
+              meta: {
+                  title: "heropage04"
+              }
           }
       ]
   },
