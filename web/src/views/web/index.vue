@@ -16,8 +16,7 @@ import WebFooter from "@/components/layout/WebFooter.vue";
 <style scoped lang="scss">
 .web{
     .el-footer{
-        height: auto;
-        border: 1px solid #DCDFE6;
+        padding: 0px;
     }
 }
 </style>

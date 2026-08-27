@@ -135,10 +135,10 @@
 
 import { ref } from "vue";
 
-import HeroPage01 from "@/views/web/test/HeroPage01.vue";
-import HeroPage02 from "@/views/web/test/HeroPage02.vue";
-import HeroPage03 from "@/views/web/test/HeroPage03.vue";
-import HeroPage04 from "@/views/web/test/HeroPage04.vue";
+import HeroPage01 from "@/components/hero/HeroPage01.vue";
+import HeroPage02 from "@/components/hero/HeroPage02.vue";
+import HeroPage03 from "@/components/hero/HeroPage03.vue";
+import HeroPage04 from "@/components/hero/HeroPage04.vue";
 
 
 /**
@@ -202,19 +202,10 @@ const goTo = (index: number) => {
 ===================================================== */
 
 .carousel {
-
   position: relative;
-
   width: 100%;
-
-  max-width: 1400px;
-
   margin: 0 auto;
-
-  padding: 0 20px;
-
   box-sizing: border-box;
-
 }
 
 

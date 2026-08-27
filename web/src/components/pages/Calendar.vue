@@ -123,10 +123,10 @@ getCalendarInfo();
   overflow: hidden;
   background: #fff;
   border: 1px solid #e8e8e8;
-  border-radius: 2px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  border-radius: 10px;
+  box-shadow: 4px 4px rgba(0, 0, 0, 0.196);
   transition: all 0.3s ease;
-
+  
   :deep(.el-card__body) {
     padding: 22px 24px;
   }

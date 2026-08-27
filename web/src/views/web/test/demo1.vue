@@ -32,11 +32,9 @@
 <style lang="scss" scoped>
 // 使用全局黑白灰scss变量（vite已配置additionalData自动导入theme.scss）
 .blog-container {
-  min-height: 100vh;
-  background: $white;
-  color: $black;
-
-}
+    background: #fcfcfc;
+    color: black;
+  }
 
 // 导航栏
 .blog-header {
@@ -44,7 +42,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 24px 48px;
-  border-bottom: 1px solid $light-gray;
+  border-bottom: 1px solid gray;
 
   .logo {
     font-size: 32px;
@@ -55,7 +53,7 @@
     gap: 60px;
     .nav-item {
       font-size: 20px;
-      color: $black;
+      color: black;
       text-decoration: none;
       position: relative;
       &.active::after {
@@ -65,7 +63,7 @@
         height: 2px;
         bottom: -10px;
         left:0;
-        background: $black;
+        background: black;
       }
     }
   }
@@ -75,7 +73,7 @@
 .hero {
   position: relative;
   padding: 80px 48px;
-  border-bottom:1px solid $light-gray;
+  border-bottom:1px solid light-gray;
   overflow:hidden;
 
   .hero-content {
@@ -115,7 +113,7 @@
   padding:48px;
 
   .article-card {
-    border:1px solid $light-gray;
+    border:1px solid gray;
     height:220px;
     position:relative;
     padding:32px;
@@ -141,7 +139,7 @@
   }
   .card‑dark {
     background:#1a1a1a;
-    color:$white;
+    color:white;
     .card‑bg‑dark {
       position:absolute;
       bottom:0;
@@ -164,8 +162,8 @@
 // 页脚
 .blog-footer {
   padding:32px 48px;
-  border-top:1px solid $light-gray;
+  border-top:1px solid gray;
   font-size:16px;
-  color:$mid-gray;
+  color:gray;
 }
 </style>

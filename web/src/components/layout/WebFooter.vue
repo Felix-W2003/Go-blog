@@ -389,12 +389,9 @@ const socialLinks = computed(() => [
   background: #0d0d0d;
   color: #fff;
 }
-
-
 /* =====================================================
    顶部装饰线
 ===================================================== */
-
 .footer-line {
   position: absolute;
   top: 0;
@@ -410,28 +407,17 @@ const socialLinks = computed(() => [
           #555,
           transparent
       );
-
   opacity: 0.7;
-
 }
-
-
 /* =====================================================
    背景网格
-===================================================== */
-
+==================================================== */
 .footer-grid {
-
   position: absolute;
-
   inset: 0;
-
   pointer-events: none;
-
-  opacity: 0.095;
-
+  opacity: 0.015;
   background-image:
-
       linear-gradient(
           rgb(255, 255, 255) 1px,
           transparent 1px
@@ -453,30 +439,22 @@ const socialLinks = computed(() => [
 ===================================================== */
 
 .footer-glow {
-
   position: absolute;
-
   width: 500px;
   height: 500px;
-
-  right: 500px;
+  left: -90px;
   bottom: 300px;
-
   border-radius: 50%;
-
   background:
       radial-gradient(
           circle,
-          rgba(255, 255, 255, 0.479),
+          rgba(255, 255, 255, 0.632),
           transparent 70%
       );
-
   filter: blur(30px);
-
   pointer-events: none;
-
   animation:
-      footerGlow 8s ease-in-out infinite
+      footerGlow 2s ease-in-out infinite
       alternate;
 
 }
@@ -489,7 +467,7 @@ const socialLinks = computed(() => [
   }
 
   to {
-    transform: translate(-80px, -40px);
+    transform: translate(0px, -90px);
   }
 
 }
@@ -1126,7 +1104,6 @@ const socialLinks = computed(() => [
   }
 
 }
-
 
 @media screen and (max-width: 768px) {
 

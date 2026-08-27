@@ -47,46 +47,54 @@ const routes = [
                   title: "关于"
               }
           },
-          {
-            path: "demo",
-              name: "demo",
-              component: () => import('@/views/web/test/demo.vue'),
-              meta: {
-                  title: "demo"
-              }
-          },
-            {
-            path: "heropage01",
-              name: "heropage01",
-              component: () => import('@/views/web/test/HeroPage01.vue'),
-              meta: {
-                  title: "heropage01"
-              }
-          },
-           {
-            path: "heropage02",
-              name: "heropage02",
-              component: () => import('@/views/web/test/HeroPage02.vue'),
-              meta: {
-                  title: "heropage02"
-              }
-          },
-           {
-            path: "heropage03",
-              name: "heropage03",
-              component: () => import('@/views/web/test/HeroPage03.vue'),
-              meta: {
-                  title: "heropage03"
-              }
-          },
-          {
-            path: "heropage04",
-              name: "heropage04",
-              component: () => import('@/views/web/test/HeroPage04.vue'),
-              meta: {
-                  title: "heropage04"
-              }
-          }
+        //   {
+        //     path: "demo",
+        //       name: "demo",
+        //       component: () => import('@/views/web/test/demo.vue'),
+        //       meta: {
+        //           title: "demo"
+        //       }
+        //   },
+        //    {
+        //     path: "demo1",
+        //       name: "demo1",
+        //       component: () => import('@/views/web/test/demo1.vue'),
+        //       meta: {
+        //           title: "demo1"
+        //       }
+        //   },
+        //     {
+        //     path: "heropage01",
+        //       name: "heropage01",
+        //       component: () => import('@/components/hero/HeroPage01.vue'),
+        //       meta: {
+        //           title: "heropage01"
+        //       }
+        //   },
+        //    {
+        //     path: "heropage02",
+        //       name: "heropage02",
+        //       component: () => import('@/components/hero/HeroPage02.vue'),
+        //       meta: {
+        //           title: "heropage02"
+        //       }
+        //   },
+        //    {
+        //     path: "heropage03",
+        //       name: "heropage03",
+        //       component: () => import('@/components/hero/HeroPage03.vue'),
+        //       meta: {
+        //           title: "heropage03"
+        //       }
+        //   },
+        //   {
+        //     path: "heropage04",
+        //       name: "heropage04",
+        //       component: () => import('@/components/hero/HeroPage04.vue'),
+        //       meta: {
+        //           title: "heropage04"
+        //       }
+        //   }
       ]
   },
   {

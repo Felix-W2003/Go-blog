@@ -364,18 +364,20 @@ getNewsTableData("baidu");
 /* =====================================================
    Daily News
 ===================================================== */
-
+.el-card{
+  border: 0;
+}
 .daily-news {
-
   position: relative;
   width: 100%;
   margin-bottom: 24px;
   padding: 28px 30px 22px;
   box-sizing: border-box;
-  border: 1px solid #e8e8e8;
-  border-radius: 20px;
-  background: #ffffff;
+  border-radius: 10px;
+  background: #fcfcfc;
   overflow: hidden;
+   box-shadow:
+        2px 1px rgba(0, 0, 0, 0.077);
   transition:
       transform 0.35s ease,
       box-shadow 0.35s ease,
@@ -385,16 +387,10 @@ getNewsTableData("baidu");
   /* subtle hover */
 
   &:hover {
-
     transform: translateY(-2px);
-
-    border-color: #dedede;
-
     box-shadow:
-        0 12px 35px rgba(0, 0, 0, 0.06);
-
+         5px 5px rgba(0, 0, 0, 0.173);
   }
-
 }
 
 
@@ -419,10 +415,9 @@ getNewsTableData("baidu");
 .title {
 
   position: relative;
-  font-size:40px;
-  font-weight: 400;
+  font-size:25px;
+  font-weight: 600;
   line-height: 1.3;
-  letter-spacing: 7px;
   color: #464646;
 
 }
@@ -447,9 +442,7 @@ getNewsTableData("baidu");
  */
 
 .daily-news:hover {
-
   .title-line {
-
     width: 940px;
     height: 3px;
       background:
@@ -489,7 +482,7 @@ getNewsTableData("baidu");
 }
 
 
-/* Element Plus */
+/* Element Plus */  
 
 :deep(.el-tabs__header) {
 

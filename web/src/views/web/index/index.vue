@@ -65,7 +65,7 @@ import Feedback from "@/components/pages/Feedback.vue";
 ===================================================== */
 .hero-section {
   width: 100%;
-  padding-top: 100px;
+  padding-top: 68px;
  }
 /* =====================================================
    Main
