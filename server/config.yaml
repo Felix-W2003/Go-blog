@@ -57,7 +57,7 @@ system:
     port: 8080
     env: release
     router_prefix: api
-    use_multipoint: false
+    use_multipoint: true
     sessions_secret: 620WFwf0111
     oss_type: ""
 upload:
@@ -75,7 +75,7 @@ website:
     icp_filing: icp备案号:鲁ICP备2026045552号-1
     public_security_filing: 公安备案号
     bilibili_url: https://space.bilibili.com/xxx
-    gitee_url: https://gitee.com/xxx
+    gitee_url: https://github.com/Felix-W2003/
     github_url: https://github.com/Felix-W2003/
     name: Felix
     job: 无业码农

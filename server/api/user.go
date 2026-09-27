@@ -2,6 +2,7 @@ package api
 
 import (
 	"errors"
+	"fmt"
 	"server/global"
 	"server/model/database"
 	"server/model/request"
@@ -64,6 +65,7 @@ func (userApi *UserApi) Register(c *gin.Context) {
 
 // Login 登录接口，根据不同的登录方式调用不同的登录方法
 func (userApi *UserApi) Login(c *gin.Context) {
+	fmt.Println("这是gin", c)
 	switch c.Query("flag") {
 	case "email":
 		userApi.EmailLogin(c)

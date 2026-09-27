@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"server/global"
 	"server/model/database"
 	"server/utils"
@@ -33,18 +34,22 @@ func (jwtService *JwtService) GetRedisJWT(uuid uuid.UUID) (string, error) {
 // JoinInBlacklist 将JWT添加到黑名单
 func (jwtService *JwtService) JoinInBlacklist(jwtList database.JwtBlacklist) error {
 	// 将JWT记录插入到数据库中的黑名单表
-	if err := global.DB.Create(&jwtList).Error; err != nil {
-		return err
-	}
-	// 将JWT添加到内存中的黑名单缓存
-	global.BlackCache.SetDefault(jwtList.Jwt, struct{}{})
+	// if err := global.DB.Create(&jwtList).Error; err != nil {
+	// 	return err
+	// }
+	// // 将JWT添加到内存中的黑名单缓存
+	// global.BlackCache.SetDefault(jwtList.Jwt, struct{}{})
+
+	//global.Redis.Set(utils.JwtBlacklistKey(jwtList.Jwt),)
 	return nil
 }
 
 // IsInBlacklist 检查JWT是否在黑名单中
-func (jwtService *JwtService) IsInBlacklist(jwt string) bool {
+func (jwtService *JwtService) IsInBlacklist(jti string) bool {
+	fmt.Println(jti)
 	// 从黑名单缓存中检查JWT是否存在
-	_, ok := global.BlackCache.Get(jwt)
+	_, ok := global.BlackCache.Get(jti)
+
 	return ok
 }
 
@@ -60,5 +65,7 @@ func LoadAll() {
 	// 将所有JWT添加到BlackCache缓存中
 	for i := 0; i < len(data); i++ {
 		global.BlackCache.SetDefault(data[i], struct{}{})
+		fmt.Println(data[i])
 	}
+
 }

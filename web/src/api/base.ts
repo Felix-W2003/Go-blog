@@ -7,7 +7,7 @@ export interface CaptchaResponse {
 }
 
 export const captcha = (): Promise<ApiResponse<CaptchaResponse>> => {
-    return service({
+        return service({
         url: '/base/captcha',
         method: 'post',
     })

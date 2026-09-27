@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"net"
 	"server/global"
 	"server/model/appTypes"
@@ -47,6 +48,7 @@ func setCookie(c *gin.Context, name, value string, maxAge int, host string) {
 
 // GetAccessToken 从请求头获取Access Token
 func GetAccessToken(c *gin.Context) string {
+	fmt.Println("--------c.Request:", c.Request, "-------")
 	// 获取x-access-token头部值
 	token := c.Request.Header.Get("x-access-token")
 	return token

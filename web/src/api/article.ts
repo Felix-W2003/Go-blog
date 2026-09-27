@@ -3,8 +3,7 @@ import type {ApiResponse} from "@/utils/request";
 import service from "@/utils/request";
 
 export interface Article {
-    created_at: string;
-    updated_at: string;
+    
 
     cover: string;
     title: string;

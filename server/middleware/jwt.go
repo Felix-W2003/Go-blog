@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"errors"
+	"fmt"
 	"server/global"
 	"server/model/database"
 	"server/model/request"
@@ -22,31 +23,35 @@ func JWTAuth() gin.HandlerFunc {
 		accessToken := utils.GetAccessToken(c)
 		refreshToken := utils.GetRefreshToken(c)
 
-		// 检查Refresh Token是否在黑名单中，如果是，则清除Refresh Token并返回未授权错误
-		if jwtService.IsInBlacklist(refreshToken) {
+		j := utils.NewJWT()
+		refreshClaims, err := j.ParseRefreshToken(refreshToken)
+		if err != nil {
+			// 如果Refresh Token也无法解析，清除Refresh Token并返回未授权错误
 			utils.ClearRefreshToken(c)
+			response.NoAuth("Refresh token expired or invalid", c)
+			c.Abort()
+			return
+		}
+
+		fmt.Println("开始检查是否在黑名单了")
+		// 检查Refresh Token是否在黑名单中，如果是，则清除Refresh Token并返回未授权错误
+		if jwtService.IsInBlacklist("jwt:blacklist:" + refreshClaims.ID) {
+			utils.ClearRefreshToken(c)
+			fmt.Println("是在黑名单了")
 			response.NoAuth("Account logged in from another location or token is invalid", c)
 			c.Abort() // 终止请求的后续处理
 			return
 		}
-
+		fmt.Println("没在黑名单了")
 		// 创建一个JWT实例，用于后续的token解析与验证
-		j := utils.NewJWT()
 
 		// 解析Access Token
 		claims, err := j.ParseAccessToken(accessToken)
+
 		if err != nil {
 			// 如果解析失败并且Access Token为空或过期
 			if accessToken == "" || errors.Is(err, utils.TokenExpired) {
 				// 尝试解析Refresh Token
-				refreshClaims, err := j.ParseRefreshToken(refreshToken)
-				if err != nil {
-					// 如果Refresh Token也无法解析，清除Refresh Token并返回未授权错误
-					utils.ClearRefreshToken(c)
-					response.NoAuth("Refresh token expired or invalid", c)
-					c.Abort()
-					return
-				}
 
 				// 如果Refresh Token有效，通过其UserID获取用户信息
 				var user database.User

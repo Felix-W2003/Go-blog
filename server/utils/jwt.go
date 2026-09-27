@@ -2,10 +2,12 @@ package utils
 
 import (
 	"errors"
+	"fmt"
 	"server/global"
 	"server/model/request"
 	"time"
 
+	"github.com/gofrs/uuid"
 	"github.com/golang-jwt/jwt/v4"
 )
 
@@ -32,12 +34,14 @@ func NewJWT() *JWT {
 // CreateAccessClaims 创建 Access Token 的 Claims，包含基本信息和过期时间等
 func (j *JWT) CreateAccessClaims(baseClaims request.BaseClaims) request.JwtCustomClaims {
 	ep, _ := ParseDuration(global.Config.Jwt.AccessTokenExpiryTime) // 获取过期时间
+	fmt.Println("-------过期时间是", ep)
 	claims := request.JwtCustomClaims{
 		BaseClaims: baseClaims, // 基本 Claims
 		RegisteredClaims: jwt.RegisteredClaims{
 			Audience:  jwt.ClaimStrings{"TAP"},                // 受众
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(ep)), // 过期时间
 			Issuer:    global.Config.Jwt.Issuer,               // 签名的发行者
+			ID:        uuid.Must(uuid.NewV4()).String(),
 		},
 	}
 	return claims
@@ -58,6 +62,7 @@ func (j *JWT) CreateRefreshClaims(baseClaims request.BaseClaims) request.JwtCust
 			Audience:  jwt.ClaimStrings{"TAP"},                // 受众
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(ep)), // 过期时间
 			Issuer:    global.Config.Jwt.Issuer,               // 签名的发行者
+			ID:        uuid.Must(uuid.NewV4()).String(),
 		},
 	}
 	return claims

@@ -1,6 +1,6 @@
 <template>
   <div class="register-form">
-    <el-image class="register-image" src="/image/xiaochun_character_elements_transparent.png" alt=""/>
+    <el-image class="register-image" src="/image/welcome_register_login_forget.png" alt=""/>
     <el-form
         ref="registerForm"
         :model="registerFormData"

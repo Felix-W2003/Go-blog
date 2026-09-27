@@ -1,6 +1,7 @@
 package initialize
 
 import (
+	"fmt"
 	"os"
 	"server/global"
 	"server/utils"
@@ -29,4 +30,5 @@ func OtherInit() {
 	global.BlackCache = local_cache.NewCache(
 		local_cache.SetDefaultExpire(refreshTokenExpiry),
 	)
+	fmt.Println(refreshTokenExpiry)
 }

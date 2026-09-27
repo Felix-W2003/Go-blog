@@ -2,6 +2,7 @@ package utils
 
 import (
 	"crypto/md5"
+	"crypto/sha256"
 	"encoding/hex"
 
 	"golang.org/x/crypto/bcrypt"
@@ -23,4 +24,9 @@ func MD5V(str []byte, b ...byte) string {
 	h := md5.New()
 	h.Write(str)
 	return hex.EncodeToString(h.Sum(b))
+}
+
+func JwtBlacklistKey(jwt string) string {
+	h := sha256.Sum256([]byte(jwt))
+	return "jwt:blacklist:" + hex.EncodeToString(h[:])
 }

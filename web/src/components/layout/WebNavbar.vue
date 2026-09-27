@@ -1,94 +1,41 @@
 <template>
-  <header
-      class="web-navbar"
-      :class="{ show: isScrolled }"
-  >
-
+  <header class="web-navbar" :class="{ show: isScrolled }">
     <div class="container">
-
-
       <!-- Logo -->
       <div class="logo-wrapper">
-
         <div class="blog-logo">
-
           <span class="logo-main">
             FELIX
           </span>
-
           <span class="logo-sub">
             BLOG
           </span>
-
         </div>
-
       </div>
-
-
 
       <!-- 导航 -->
       <div class="web-menu">
-
-        <el-menu
-            mode="horizontal"
-            :ellipsis="false"
-            :router="true"
-            :default-active="$route.path"
-        >
-
-          <el-menu-item
-              v-for="item in menuList"
-              :key="item.name"
-              :index="item.name"
-          >
-
+        <el-menu mode="horizontal" :ellipsis="false" :router="true" :default-active="$route.path">
+          <el-menu-item v-for="item in menuList" :key="item.name" :index="item.name">
             <span>
               {{ item.title }}
             </span>
-
           </el-menu-item>
-
-
         </el-menu>
-
-
       </div>
-
-
 
 
       <!-- 右侧 -->
       <div class="navbar-right">
-
-
         <!-- 搜索 -->
         <div class="search-box">
-
-
-          <el-input
-              v-model="searchKeyword"
-              placeholder="搜索文章..."
-              clearable
-              @keyup.enter="handleSearch"
-          >
-
-
+          <el-input v-model="searchKeyword" placeholder="搜索文章..." clearable @keyup.enter="handleSearch">
             <template #prefix>
-
-
               <el-icon>
-
                 <Search />
-
               </el-icon>
-
-
             </template>
-
-
           </el-input>
-
-
         </div>
 
 
@@ -119,7 +66,7 @@ import {
   useRouter
 } from "vue-router";
 import AuthPopover
-    from "@/components/common/AuthPopover.vue";
+  from "@/components/common/AuthPopover.vue";
 /**
  * router
  */
@@ -143,78 +90,81 @@ const searchKeyword = ref("");
  * 菜单
  */
 interface MenuItem {
-  title:string;
-  name:string;
+  title: string;
+  name: string;
 }
-const menuList:MenuItem[] = [
+const menuList: MenuItem[] = [
   {
-    title:"首页",
-    name:"/"
+    title: "首页",
+    name: "/"
   },
   {
-    title:"搜索",
-    name:"/search"
+    title: "搜索",
+    name: "/search"
   },
   {
-    title:"新闻",
-    name:"/news"
+    title: "新闻",
+    name: "/news"
   },
   {
-    title:"友链",
-    name:"/friend-link"
+    title: "友链",
+    name: "/friend-link"
   },
   {
-    title:"关于",
-    name:"/about"
+    title: "关于",
+    name: "/about"
   }
 ];
 /**
  * 搜索
  */
-const handleSearch = ()=>{
+const handleSearch = () => {
   const keyword =
-      searchKeyword.value.trim();
+    searchKeyword.value.trim();
+    console.log(keyword)
   // 空搜索不处理
-  if(!keyword){
+  if (!keyword) {
+      console.log("this is blanket")
     return;
   }
+  console.log("push")
   router.push({
-    path:"/search",
-    query:{
-      query:keyword
+    path: "/search",
+    query: {
+      query: keyword
     }
   });
 };
 /**
  * 滚动监听
  */
-function handleScroll(){
+function handleScroll() {
   const top =
-      window.scrollY ||
-      document.documentElement.scrollTop ||
-      document.body.scrollTop ||
-      0;
+    window.scrollY ||
+    document.documentElement.scrollTop ||
+    document.body.scrollTop ||
+    0;
   isScrolled.value =
-      top >=100;
+    top >= 100;
 }
-onMounted(()=>{
-  if(props.noScroll){
-    isScrolled.value=true;
+onMounted(() => {
+  if (props.noScroll) {
+    isScrolled.value = true;
     return;
   }
   handleScroll();
   window.addEventListener(
-      "scroll",
-      handleScroll,
-      {
-        passive:true
-      }
+    "scroll",
+    handleScroll,
+    {
+      passive: true
+    }
   );
 });
-onUnmounted(()=>{
+onUnmounted(() => {
   window.removeEventListener(
-      "scroll",
-      handleScroll
+    "scroll",
+    handleScroll
   );
 });
 
@@ -246,6 +196,7 @@ onUnmounted(()=>{
     box-shadow 0.35s ease,
     backdrop-filter 0.35s ease;
 }
+
 /* =====================================================
    Container
 ===================================================== */
@@ -257,6 +208,7 @@ onUnmounted(()=>{
   display: flex;
   align-items: center;
 }
+
 /* =====================================================
    Logo
 ===================================================== */
@@ -267,6 +219,7 @@ onUnmounted(()=>{
   align-items: center;
   flex-shrink: 0;
 }
+
 /* =========================================
    FELIX BLOG Logo
 ========================================= */
@@ -280,17 +233,20 @@ onUnmounted(()=>{
   transition:
     color 0.35s ease;
 }
+
 .logo-main {
   font-size: 20px;
   font-weight: 800;
   letter-spacing: 1px;
 }
+
 .logo-sub {
   font-size: 12px;
   font-weight: 400;
   letter-spacing: 2.5px;
   opacity: 0.65;
 }
+
 /* =====================================================
    Menu
 ===================================================== */
@@ -298,6 +254,7 @@ onUnmounted(()=>{
   margin-left: 20px;
   flex: 1;
 }
+
 /* Element Plus Menu */
 .web-menu {
   :deep(.el-menu) {
@@ -307,6 +264,7 @@ onUnmounted(()=>{
     background: transparent !important;
     border-bottom: none !important;
   }
+
   :deep(.el-menu-item) {
     position: relative;
     height: 68px;
@@ -331,6 +289,7 @@ onUnmounted(()=>{
     background: transparent !important;
     transform: translateY(-1px);
   }
+
   /* =================================================
      自定义激活下划线
   ================================================= */
@@ -420,8 +379,7 @@ onUnmounted(()=>{
     background:
       rgba(255, 255, 255, 0.08);
 
-    border: 1px solid
-      rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.08);
 
     box-shadow: none !important;
 
@@ -515,8 +473,9 @@ onUnmounted(()=>{
     0 5px 25px rgba(0, 0, 0, 0.08);
 
   .blog-logo {
-  color: #111;
-}
+    color: #111;
+  }
+
   /* =================================================
      Menu
   ================================================= */
@@ -703,5 +662,4 @@ onUnmounted(()=>{
   }
 
 }
-
 </style>

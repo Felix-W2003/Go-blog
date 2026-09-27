@@ -1,6 +1,6 @@
 <template>
   <div class="login-form">
-    <el-image class="login-image" src="/image/xiaochun_character_elements_transparent.png" alt=""/>
+    <el-image class="login-image" src="/image/welcome_register_login_forget.png" alt=""/>
     <el-form
         ref="loginForm"
         :model="loginFormData"
@@ -49,7 +49,7 @@
 </template>
 
 <script setup lang="ts">
-import {reactive, ref,} from "vue";
+import {onMounted, reactive, ref,} from "vue";
 import type {LoginRequest} from "@/api/user";
 import {useUserStore} from "@/stores/user";
 import {captcha} from "@/api/base";
@@ -93,12 +93,12 @@ const layoutStore = useLayoutStore()
 const picPath = ref('')
 
 const loginVerify = () => {
+ 
   captcha().then(async (res) => {
     picPath.value = res.data.pic_path
     loginFormData.captcha_id = res.data.captcha_id
   })
 }
-
 loginVerify()
 
 const submitForm = async () => {
@@ -131,6 +131,8 @@ const submitForm = async () => {
   .login-image {
     max-width: 160px;
     width: 100%;
+    margin: 10px;
+    border-radius: 10px;
   }
 
   .el-form {

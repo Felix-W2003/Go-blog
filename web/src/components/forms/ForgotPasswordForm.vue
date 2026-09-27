@@ -1,6 +1,6 @@
 <template>
   <div class="forgot-password-form">
-    <el-image class="forgot-password-image" src="/image/xiaochun_character_elements_transparent.png" alt=""/>
+    <el-image class="forgot-password-image" src="/image/welcome_register_login_forget.png" alt=""/>
     <el-form
         ref="forgotPasswordForm"
         :model="forgotPasswordFormData"

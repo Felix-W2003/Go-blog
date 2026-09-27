@@ -197,7 +197,7 @@ func (userService *UserService) UserList(info request.UserList) (interface{}, in
 	}
 
 	if info.Register != nil {
-		db = db.Where("register = ?", info.Register)
+		db = db.Where("register = ?", appTypes.ToRegister(*info.Register))
 	}
 
 	option := other.MySQLOption{
