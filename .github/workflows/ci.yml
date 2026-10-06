@@ -1,0 +1,67 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch: # 允许在 Actions 页面手动触发一次
+
+jobs:
+  backend:
+    name: 后端 vet + build + test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        # 关键：go.mod 在 server/ 目录下，不在仓库根目录，
+        # 所以所有 run 步骤都必须以 server/ 作为工作目录，否则会找不到 go.mod
+        working-directory: server
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 安装 Go（版本直接取自 server/go.mod 的 go 指令）
+        uses: actions/setup-go@v5
+        with:
+          # 注意：这两个路径是相对仓库根目录的，不受上面的 working-directory 影响
+          # 若某个补丁版本拉取失败，可改成 go-version: '1.26.x'
+          go-version-file: server/go.mod
+          cache-dependency-path: server/go.sum
+
+      - name: 静态检查（go vet）
+        run: go vet ./...
+
+      - name: 编译（go build）
+        run: go build ./...
+
+      - name: 单元测试（-race 顺带检测数据竞争）
+        run: go test -race -v ./...
+
+  # ---------------------------------------------------------------------------
+  # 前端 job：先在本地把 `cd web && npm run type-check` 跑通，再删掉下面的注释启用。
+  # 现在就加上会让 CI 一上来就红（typescript / vue-tsc 可能有既存报错）。
+  # ---------------------------------------------------------------------------
+  # frontend:
+  #   name: 前端类型检查
+  #   runs-on: ubuntu-latest
+  #   timeout-minutes: 15
+  #   defaults:
+  #     run:
+  #       working-directory: web
+  #   steps:
+  #     - name: 检出代码
+  #       uses: actions/checkout@v4
+  #
+  #     - name: 安装 Node（package.json 要求 ^22.18.0 || >=24.12.0）
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: '24'
+  #         cache: npm
+  #         cache-dependency-path: web/package-lock.json
+  #
+  #     - name: 安装依赖
+  #       run: npm ci
+  #
+  #     - name: 类型检查
+  #       run: npm run type-check
