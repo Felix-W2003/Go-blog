@@ -3,7 +3,8 @@ import type {ApiResponse} from "@/utils/request";
 import service from "@/utils/request";
 
 export interface Article {
-    
+    created_at: string;
+    updated_at: string;
 
     cover: string;
     title: string;
@@ -150,6 +151,14 @@ export interface ArticleTag {
 export const articleTags = (): Promise<ApiResponse<ArticleTag[]>> => {
     return service({
         url: '/article/tags',
+        method: 'get',
+    });
+}
+
+// 首页「热门文章」：按浏览量降序返回前 10 篇
+export const articleHot = (): Promise<ApiResponse<PageResult<Hit<Article>>>> => {
+    return service({
+        url: '/article/hot',
         method: 'get',
     });
 }

@@ -111,6 +111,39 @@ func (articleService *ArticleService) ArticleSearch(info request.ArticleSearch) 
 	return utils.EsPagination(context.TODO(), option)
 }
 
+// hotArticleLimit 首页「热门文章」展示的条数
+const hotArticleLimit = 10
+
+// ArticleHot 获取浏览量最高的前 hotArticleLimit 篇文章，按 views 降序
+// 注意：views 由定时任务每小时从 Redis 同步到 ES，因此榜单最多滞后一小时
+func (articleService *ArticleService) ArticleHot() (interface{}, int64, error) {
+	req := &search.Request{
+		Query: &types.Query{
+			MatchAll: &types.MatchAllQuery{},
+		},
+		// 按浏览量降序排列
+		Sort: []types.SortCombinations{
+			types.SortOptions{
+				SortOptions: map[string]types.FieldSort{
+					"views": {Order: &sortorder.Desc},
+				},
+			},
+		},
+	}
+
+	option := other.EsOption{
+		PageInfo: request.PageInfo{
+			Page:     1,
+			PageSize: hotArticleLimit,
+		},
+		Index:   elasticsearch.ArticleIndex(),
+		Request: req,
+		// 首页小卡片只用到标题和浏览量，不回传摘要与正文，减小响应体
+		SourceIncludes: []string{"title", "views", "cover", "created_at"},
+	}
+	return utils.EsPagination(context.TODO(), option)
+}
+
 func (articleService *ArticleService) ArticleCategory() ([]database.ArticleCategory, error) {
 	var category []database.ArticleCategory
 	if err := global.DB.Find(&category).Error; err != nil {

@@ -19,6 +19,7 @@
              左侧主要内容
         =========================== -->
         <section class="main-column">
+          <HotArticles />
           <DailyNews />
           <Advertisement />
           <ArticleList />
@@ -29,7 +30,7 @@
         <aside class="sidebar">
 
           <ProfileCard />
-                    <Calendar />
+          <Calendar />
           <TagCloud />
           <RecentComments />
           <Feedback />
@@ -46,6 +47,7 @@ import DailyNews from "@/components/pages/DailyNews.vue";
 import ArticleList from "@/components/pages/ArticleList.vue";
 import Calendar from "@/components/pages/Calendar.vue";
 import ProfileCard from "@/components/pages/ProfileCard.vue";
+import HotArticles from "@/components/pages/HotArticles.vue";
 import TagCloud from "@/components/pages/TagCloud.vue";
 import RecentComments from "@/components/pages/RecentComments.vue";
 import Feedback from "@/components/pages/Feedback.vue";

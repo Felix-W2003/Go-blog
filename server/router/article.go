@@ -25,6 +25,7 @@ func (a *ArticleRouter) InitArticleRouter(Router *gin.RouterGroup, PublicRouter 
 		articlePublicRouter.GET("search", articleApi.ArticleSearch)
 		articlePublicRouter.GET("category", articleApi.ArticleCategory)
 		articlePublicRouter.GET("tags", articleApi.ArticleTags)
+		articlePublicRouter.GET("hot", articleApi.ArticleHot)
 	}
 	{
 		articleAdminRouter.POST("create", articleApi.ArticleCreate)

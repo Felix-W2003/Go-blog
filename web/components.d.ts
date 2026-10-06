@@ -78,6 +78,7 @@ declare module 'vue' {
     HeroPage02: typeof import('./src/components/hero/HeroPage02.vue')['default']
     HeroPage03: typeof import('./src/components/hero/HeroPage03.vue')['default']
     HeroPage04: typeof import('./src/components/hero/HeroPage04.vue')['default']
+    HotArticles: typeof import('./src/components/pages/HotArticles.vue')['default']
     LoginForm: typeof import('./src/components/forms/LoginForm.vue')['default']
     Logo: typeof import('./src/components/widgets/Logo.vue')['default']
     PasswordResetForm: typeof import('./src/components/forms/PasswordResetForm.vue')['default']
