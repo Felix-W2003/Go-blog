@@ -8,7 +8,7 @@ import (
 )
 
 func RegisterScheduledTasks(c *cron.Cron) error {
-	if _, err := c.AddFunc("@hourly", func() {
+	if _, err := c.AddFunc("@every 10s", func() {
 		if err := UpdateArticleViewsSyncTask(); err != nil {
 			global.Log.Error("Failed to update article views:", zap.Error(err))
 		}
