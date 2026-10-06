@@ -7,7 +7,7 @@
     </el-row>
 
     <div class="comments-content">
-      <comment-item :comments="comments"/>
+      <comment-item :comments="comments" theme="dark"/>
     </div>
   </el-card>
 </template>

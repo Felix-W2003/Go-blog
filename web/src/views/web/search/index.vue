@@ -108,7 +108,7 @@
 import WebNavbar from "@/components/layout/WebNavbar.vue";
 import type {Hit} from "@/api/common";
 import {type Article, articleCategory, articleSearch, type ArticleSearchRequest, articleTags} from "@/api/article";
-import {computed, nextTick, onMounted, reactive, ref, watch} from "vue";
+import {computed, reactive, ref, watch} from "vue";
 import {useRoute, useRouter} from "vue-router";
 
 const articleSearchRequest = reactive<ArticleSearchRequest>({
@@ -172,7 +172,10 @@ const page_size = ref(10)
 const total = ref(0)
 const articleTableData = ref<Hit<Article>[]>()
 
-onMounted(() => {
+/* =====================================================
+   从 URL 同步查询条件（URL 是唯一的数据来源）
+===================================================== */
+const syncFromRoute = () => {
   articleSearchRequest.query = route.query.query as string || ""
   articleSearchRequest.category = route.query.category as string || ""
   articleSearchRequest.tag = route.query.tag as string || ""
@@ -180,50 +183,51 @@ onMounted(() => {
   articleSearchRequest.order = route.query.order as string || "desc"
   page.value = Number(route.query.page) || 1
   page_size.value = Number(route.query.page_size) || 10
-})
+  articleSearchRequest.page = page.value
+  articleSearchRequest.page_size = page_size.value
+}
 
-
+/* =====================================================
+   只负责查询，不修改 URL
+===================================================== */
 const getArticleSearchTableData = async () => {
-  articleSearchRequest.page = page.value;
-  articleSearchRequest.page_size = page_size.value;
-
   const table = await articleSearch(articleSearchRequest)
 
   if (table.code === 0) {
     articleTableData.value = table.data.list;
     total.value = table.data.total;
   }
+}
 
-  await router.push({
-    path: router.currentRoute.value.path,
+/* =====================================================
+   用户操作：只把当前查询条件写进 URL
+===================================================== */
+const applySearch = () => {
+  router.push({
+    path: route.path,
     query: {
       query: articleSearchRequest.query,
       category: articleSearchRequest.category,
       tag: articleSearchRequest.tag,
       sort: articleSearchRequest.sort,
       order: articleSearchRequest.order,
-      page: articleSearchRequest.page,
-      page_size: articleSearchRequest.page_size,
+      page: String(page.value),
+      page_size: String(page_size.value),
     }
   })
 }
 
-watch(() => route.query, (newQuery) => {
-  articleSearchRequest.query = newQuery.query as string || ""
-  articleSearchRequest.category = newQuery.category as string || ""
-  articleSearchRequest.tag = newQuery.tag as string || ""
-  articleSearchRequest.sort = newQuery.sort as string || ""
-  articleSearchRequest.order = newQuery.order as string || "desc"
-  articleSearchRequest.page = Number(newQuery.page) || 1
-  articleSearchRequest.page_size = Number(newQuery.page_size) || 10
+/* =====================================================
+   URL 变化统一触发查询：
+   无论来源是顶部导航栏搜索、筛选、排序还是翻页
+===================================================== */
+watch(() => route.query, () => {
+  syncFromRoute()
+  getArticleSearchTableData()
 }, {immediate: true})
 
-nextTick(() => {
-  getArticleSearchTableData()
-})
-
 const changeArticleSearchItem = () => {
-  getArticleSearchTableData()
+  applySearch()
 }
 
 const handleArticleJumps = (id: string) => {
@@ -232,12 +236,12 @@ const handleArticleJumps = (id: string) => {
 
 const handleSizeChange = (val: number) => {
   page_size.value = val
-  getArticleSearchTableData()
+  applySearch()
 }
 
 const handleCurrentChange = (val: number) => {
   page.value = val
-  getArticleSearchTableData()
+  applySearch()
 }
 
 </script>

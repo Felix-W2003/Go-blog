@@ -1,5 +1,8 @@
 <template>
-  <div class="comment-item">
+  <div
+    class="comment-item"
+    :class="'theme-' + theme"
+  >
     <div
       v-for="item in comments"
       :key="item.id"
@@ -141,7 +144,10 @@
         v-if="item.children && item.children.length"
         class="item-children"
       >
-        <comment-item :comments="item.children" />
+        <comment-item
+          :comments="item.children"
+          :theme="theme"
+        />
       </div>
     </div>
   </div>
@@ -162,9 +168,20 @@ import { MdPreview } from "md-editor-v3";
 import { ref } from "vue";
 import { useLayoutStore } from "@/stores/layout";
 
-defineProps<{
-  comments: Comment[];
-}>();
+/**
+ * theme:
+ *   light（默认）—— 文章页、后台「我的评论」等浅色容器
+ *   dark         —— 首页侧边栏「最新评论」深色卡片
+ */
+withDefaults(
+  defineProps<{
+    comments: Comment[];
+    theme?: "light" | "dark";
+  }>(),
+  {
+    theme: "light",
+  }
+);
 
 const userStore = useUserStore();
 
@@ -230,7 +247,107 @@ const handleDelete = async (id: number) => {
 .comment-item {
   width: 100%;
 
-  color: #dedede;
+  // ======================================
+  // 主题变量
+  // 所有配色统一走变量，下面的样式只引用变量，
+  // 这样同一套结构可以同时适配浅色页面与深色卡片。
+  // ======================================
+
+  // 浅色（默认）：文章页 / 后台「我的评论」
+  &.theme-light {
+    --ci-text: #333333;
+    --ci-text-strong: #111111;
+    --ci-text-muted: #767676;
+
+    --ci-card-bg: #fbfbfb;
+    --ci-card-bg-hover: #f5f5f5;
+    --ci-card-border: #ebebeb;
+    --ci-card-border-hover: #d8d8d8;
+    --ci-card-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+    --ci-card-shadow-hover: 0 6px 18px rgba(0, 0, 0, 0.07);
+
+    --ci-divider: #f0f0f0;
+
+    --ci-avatar-border: #e8e8e8;
+    --ci-avatar-border-hover: #d0d0d0;
+    --ci-avatar-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+
+    --ci-thread-line: linear-gradient(to bottom, #e4e4e4, #f8f8f8);
+
+    --ci-input-text: #333333;
+    --ci-input-bg: #ffffff;
+    --ci-input-bg-focus: #ffffff;
+    --ci-input-border: #e2e2e2;
+    --ci-input-border-hover: #cfcfcf;
+    --ci-input-border-focus: #b0b0b0;
+    --ci-input-focus-ring: rgba(0, 0, 0, 0.045);
+    --ci-placeholder: #b5b5b5;
+
+    --ci-link: #4a6fa5;
+    --ci-link-hover: #2f5286;
+
+    --ci-quote-text: #666666;
+    --ci-quote-bg: #f7f7f7;
+    --ci-quote-border: #d4d4d4;
+
+    --ci-code-text: #444444;
+    --ci-code-bg: #f2f2f2;
+
+    --ci-pre-bg: #f7f7f7;
+    --ci-pre-border: #ececec;
+  }
+
+  // 深色：首页侧边栏「最新评论」深色卡片
+  &.theme-dark {
+    --ci-text: #dcdcdc;
+    --ci-text-strong: #f1f1f1;
+    --ci-text-muted: #8e8e8e;
+
+    --ci-card-bg: rgba(255, 255, 255, 0.025);
+    --ci-card-bg-hover: rgba(255, 255, 255, 0.045);
+    --ci-card-border: rgba(255, 255, 255, 0.08);
+    --ci-card-border-hover: rgba(255, 255, 255, 0.15);
+    --ci-card-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.025);
+    --ci-card-shadow-hover:
+      0 8px 24px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.035);
+
+    --ci-divider: rgba(255, 255, 255, 0.06);
+
+    --ci-avatar-border: rgba(255, 255, 255, 0.12);
+    --ci-avatar-border-hover: rgba(255, 255, 255, 0.28);
+    --ci-avatar-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+
+    --ci-thread-line: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.12),
+      rgba(255, 255, 255, 0.02)
+    );
+
+    --ci-input-text: #eeeeee;
+    --ci-input-bg: rgba(255, 255, 255, 0.045);
+    --ci-input-bg-focus: rgba(255, 255, 255, 0.055);
+    --ci-input-border: rgba(255, 255, 255, 0.1);
+    --ci-input-border-hover: rgba(255, 255, 255, 0.18);
+    --ci-input-border-focus: rgba(255, 255, 255, 0.28);
+    --ci-input-focus-ring: rgba(255, 255, 255, 0.035);
+    --ci-placeholder: #777777;
+
+    --ci-link: #c8c8c8;
+    --ci-link-hover: #ffffff;
+
+    --ci-quote-text: #aaaaaa;
+    --ci-quote-bg: rgba(255, 255, 255, 0.035);
+    --ci-quote-border: #777777;
+
+    --ci-code-text: #d6d6d6;
+    --ci-code-bg: rgba(255, 255, 255, 0.07);
+
+    --ci-pre-bg: #151515;
+    --ci-pre-border: rgba(255, 255, 255, 0.07);
+  }
+
+  color: var(--ci-text);
 
   // ======================================
   // 单条评论
@@ -247,14 +364,13 @@ const handleDelete = async (id: number) => {
 
     margin-bottom: 10px;
 
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--ci-card-border);
 
     border-radius: 9px;
 
-    background: rgba(255, 255, 255, 0.025);
+    background: var(--ci-card-bg);
 
-    box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.025);
+    box-shadow: var(--ci-card-shadow);
 
     transition:
       transform 0.3s ease,
@@ -269,13 +385,11 @@ const handleDelete = async (id: number) => {
     &:hover {
       transform: translateY(-2px);
 
-      background: rgba(255, 255, 255, 0.045);
+      background: var(--ci-card-bg-hover);
 
-      border-color: rgba(255, 255, 255, 0.15);
+      border-color: var(--ci-card-border-hover);
 
-      box-shadow:
-        0 8px 24px rgba(0, 0, 0, 0.2),
-        inset 0 1px 0 rgba(255, 255, 255, 0.035);
+      box-shadow: var(--ci-card-shadow-hover);
     }
 
     // ======================================
@@ -294,10 +408,9 @@ const handleDelete = async (id: number) => {
 
         margin-right: 10px;
 
-        border: 1px solid rgba(255, 255, 255, 0.12);
+        border: 1px solid var(--ci-avatar-border);
 
-        box-shadow:
-          0 3px 10px rgba(0, 0, 0, 0.25);
+        box-shadow: var(--ci-avatar-shadow);
 
         transition:
           transform 0.3s ease,
@@ -308,7 +421,7 @@ const handleDelete = async (id: number) => {
         .user-avatar {
           transform: scale(1.05);
 
-          border-color: rgba(255, 255, 255, 0.28);
+          border-color: var(--ci-avatar-border-hover);
         }
       }
 
@@ -328,7 +441,7 @@ const handleDelete = async (id: number) => {
 
         letter-spacing: 0.3px;
 
-        color: #f1f1f1;
+        color: var(--ci-text-strong);
 
         transition: color 0.25s ease;
       }
@@ -342,7 +455,7 @@ const handleDelete = async (id: number) => {
 
         font-size: 11px;
 
-        color: #8e8e8e;
+        color: var(--ci-text-muted);
 
         white-space: nowrap;
 
@@ -360,7 +473,7 @@ const handleDelete = async (id: number) => {
       padding: 0 3px;
 
       .content {
-        color: #dcdcdc;
+        color: var(--ci-text);
 
         font-size: 14px;
 
@@ -379,7 +492,7 @@ const handleDelete = async (id: number) => {
 
       padding-top: 8px;
 
-      border-top: 1px solid rgba(255, 255, 255, 0.055);
+      border-top: 1px solid var(--ci-divider);
 
       .button-group {
         display: flex;
@@ -399,7 +512,7 @@ const handleDelete = async (id: number) => {
 
       padding-top: 12px;
 
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      border-top: 1px solid var(--ci-divider);
 
       .comment-input {
         margin-top: 2px;
@@ -420,7 +533,7 @@ const handleDelete = async (id: number) => {
 
           background-color: transparent;
 
-          border: 1px solid rgba(255, 255, 255, 0.08);
+          border: 1px solid var(--ci-card-border);
 
           transition:
             transform 0.25s ease,
@@ -429,7 +542,7 @@ const handleDelete = async (id: number) => {
           &:hover {
             transform: scale(1.08);
 
-            border-color: rgba(255, 255, 255, 0.2);
+            border-color: var(--ci-card-border-hover);
           }
         }
       }
@@ -459,11 +572,7 @@ const handleDelete = async (id: number) => {
 
       width: 1px;
 
-      background: linear-gradient(
-        to bottom,
-        rgba(255, 255, 255, 0.12),
-        rgba(255, 255, 255, 0.02)
-      );
+      background: var(--ci-thread-line);
     }
   }
 }
@@ -496,11 +605,11 @@ const handleDelete = async (id: number) => {
 // ========================================
 
 :deep(.comment-input .el-textarea__inner) {
-  color: #eeeeee;
+  color: var(--ci-input-text);
 
-  background: rgba(255, 255, 255, 0.045);
+  background: var(--ci-input-bg);
 
-  border: 1px solid rgba(255, 255, 255, 0.10);
+  border: 1px solid var(--ci-input-border);
 
   border-radius: 7px;
 
@@ -514,29 +623,29 @@ const handleDelete = async (id: number) => {
     box-shadow 0.25s ease;
 
   &::placeholder {
-    color: #777777;
+    color: var(--ci-placeholder);
   }
 
   &:hover {
-    border-color: rgba(255, 255, 255, 0.18);
+    border-color: var(--ci-input-border-hover);
   }
 
   &:focus {
-    border-color: rgba(255, 255, 255, 0.28);
+    border-color: var(--ci-input-border-focus);
 
-    background: rgba(255, 255, 255, 0.055);
+    background: var(--ci-input-bg-focus);
 
     box-shadow:
-      0 0 0 2px rgba(255, 255, 255, 0.035);
+      0 0 0 2px var(--ci-input-focus-ring);
   }
 }
 
 // ========================================
-// Markdown Preview 深色适配
+// Markdown Preview 主题适配
 // ========================================
 
 :deep(.md-editor-preview) {
-  color: #dcdcdc;
+  color: var(--ci-text);
 
   background: transparent;
 
@@ -551,67 +660,67 @@ const handleDelete = async (id: number) => {
   h4,
   h5,
   h6 {
-    color: #f1f1f1;
+    color: var(--ci-text-strong);
 
-    border-bottom-color: rgba(255, 255, 255, 0.08);
+    border-bottom-color: var(--ci-card-border);
   }
 
   // 普通文字
   p {
-    color: #dcdcdc;
+    color: var(--ci-text);
   }
 
   // 加粗
   strong {
-    color: #f0f0f0;
+    color: var(--ci-text-strong);
   }
 
   // 链接
   a {
-    color: #c8c8c8;
+    color: var(--ci-link);
 
     transition: color 0.2s ease;
 
     &:hover {
-      color: #ffffff;
+      color: var(--ci-link-hover);
     }
   }
 
   // 引用
   blockquote {
-    color: #aaaaaa;
+    color: var(--ci-quote-text);
 
-    background: rgba(255, 255, 255, 0.035);
+    background: var(--ci-quote-bg);
 
-    border-left-color: #777777;
+    border-left-color: var(--ci-quote-border);
   }
 
   // 行内代码
   code {
-    color: #d6d6d6;
+    color: var(--ci-code-text);
 
-    background: rgba(255, 255, 255, 0.07);
+    background: var(--ci-code-bg);
 
     border-radius: 4px;
   }
 
   // 代码块
   pre {
-    background: #151515;
+    background: var(--ci-pre-bg);
 
-    border: 1px solid rgba(255, 255, 255, 0.07);
+    border: 1px solid var(--ci-pre-border);
 
     border-radius: 7px;
   }
 
   // 分割线
   hr {
-    border-color: rgba(255, 255, 255, 0.08);
+    border-color: var(--ci-card-border);
   }
 
   // 列表
   li {
-    color: #dcdcdc;
+    color: var(--ci-text);
   }
 }
 
