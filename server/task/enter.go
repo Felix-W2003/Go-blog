@@ -16,7 +16,7 @@ func RegisterScheduledTasks(c *cron.Cron) error {
 		return err
 	}
 	// 必须排在浏览量同步之后：先落库最新浏览量，再据此刷新热门榜
-	if _, err := c.AddFunc("@every 5s", func() {
+	if _, err := c.AddFunc("@hourly", func() {
 		if err := UpdateHotArticlesCacheTask(); err != nil {
 			global.Log.Error("Failed to refresh hot article cache:", zap.Error(err))
 		}

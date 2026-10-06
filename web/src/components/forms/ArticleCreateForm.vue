@@ -111,6 +111,10 @@ import {useLayoutStore} from "@/stores/layout";
 const props = defineProps<{
   title: string;
   content: string;
+  category?: string;
+  tags?: string[];
+  abstract?: string;
+  cover?: string;
 }>();
 
 const userStore = useUserStore()
@@ -119,11 +123,12 @@ const layoutStore = useLayoutStore()
 const path = ref(import.meta.env.VITE_BASE_API)
 
 const articleCreateFormData = reactive<ArticleCreateRequest>({
-  cover: '',
+  cover: props.cover ?? '',
   title: props.title,
-  category: '',
-  tags: [],
-  abstract: '',
+  category: props.category ?? '',
+  // 必须复制一份：否则在弹窗里增删标签会连带改掉父组件传进来的数组
+  tags: props.tags ? [...props.tags] : [],
+  abstract: props.abstract ?? '',
   content: props.content,
 })
 
