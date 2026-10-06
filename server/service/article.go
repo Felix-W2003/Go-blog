@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"server/global"
 	"server/model/appTypes"
@@ -17,6 +18,8 @@ import (
 	"github.com/elastic/go-elasticsearch/v8/typedapi/types"
 	"github.com/elastic/go-elasticsearch/v8/typedapi/types/enums/scriptlanguage"
 	"github.com/elastic/go-elasticsearch/v8/typedapi/types/enums/sortorder"
+	"github.com/go-redis/redis"
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
@@ -114,9 +117,25 @@ func (articleService *ArticleService) ArticleSearch(info request.ArticleSearch) 
 // hotArticleLimit 首页「热门文章」展示的条数
 const hotArticleLimit = 10
 
-// ArticleHot 获取浏览量最高的前 hotArticleLimit 篇文章，按 views 降序
-// 注意：views 由定时任务每小时从 Redis 同步到 ES，因此榜单最多滞后一小时
-func (articleService *ArticleService) ArticleHot() (interface{}, int64, error) {
+// hotArticleCacheKey 热门文章在 Redis 中的缓存 key
+const hotArticleCacheKey = "article:hot"
+
+// hotArticleCacheTTL 热门文章缓存的有效期
+//
+// 定时任务每小时刷新一次，TTL 特意设成刷新周期的两倍：
+// 正常情况下 key 总会在过期之前被下一次刷新覆盖，首页不会出现「刚好过期、
+// 只能回源 ES」的空窗；TTL 只作为定时任务失效时的兜底，防止脏数据永久驻留。
+const hotArticleCacheTTL = 2 * time.Hour
+
+// hotArticleCache 热门文章缓存的载体
+// 直接缓存 ES 命中的原样结构，可以原封不动地回给前端，无需改动接口契约
+type hotArticleCache struct {
+	List  []types.Hit `json:"list"`
+	Total int64       `json:"total"`
+}
+
+// queryHotArticles 从 Elasticsearch 查询浏览量最高的前 hotArticleLimit 篇文章
+func (articleService *ArticleService) queryHotArticles() ([]types.Hit, int64, error) {
 	req := &search.Request{
 		Query: &types.Query{
 			MatchAll: &types.MatchAllQuery{},
@@ -139,9 +158,77 @@ func (articleService *ArticleService) ArticleHot() (interface{}, int64, error) {
 		Index:   elasticsearch.ArticleIndex(),
 		Request: req,
 		// 首页小卡片只用到标题和浏览量，不回传摘要与正文，减小响应体
-		SourceIncludes: []string{"title", "views", "cover", "created_at"},
+		SourceIncludes: []string{"title", "views", "created_at"},
 	}
 	return utils.EsPagination(context.TODO(), option)
+}
+
+// getHotArticleFromCache 读缓存，第二个返回值表示是否命中
+// Redis 报错或数据损坏都只记日志并返回未命中，交给上层回源 ES，不阻断首页
+func (articleService *ArticleService) getHotArticleFromCache() ([]types.Hit, int64, bool) {
+	cached, err := global.Redis.Get(hotArticleCacheKey).Result()
+	if err != nil {
+		if !errors.Is(err, redis.Nil) {
+			global.Log.Error("Failed to read hot article cache:", zap.Error(err))
+		}
+		return nil, 0, false
+	}
+
+	var cache hotArticleCache
+	if err := json.Unmarshal([]byte(cached), &cache); err != nil {
+		global.Log.Error("Failed to unmarshal hot article cache:", zap.Error(err))
+		return nil, 0, false
+	}
+
+	return cache.List, cache.Total, true
+}
+
+// setHotArticleCache 覆盖写缓存
+func (articleService *ArticleService) setHotArticleCache(list []types.Hit, total int64) error {
+	if len(list) == 0 {
+		// 空榜单也是有效结果，照样缓存，避免每次请求都打到 ES
+		global.Log.Warn("Hot article query returned an empty list, caching it anyway")
+	}
+
+	payload, err := json.Marshal(hotArticleCache{List: list, Total: total})
+	if err != nil {
+		return err
+	}
+
+	return global.Redis.Set(hotArticleCacheKey, payload, hotArticleCacheTTL).Err()
+}
+
+// RefreshHotArticleCache 重新查询 ES 并覆盖缓存，供定时任务调用
+// 查询失败时直接返回错误、保留旧缓存 —— 宁可返回一小时前的榜单，也不要把它清空
+func (articleService *ArticleService) RefreshHotArticleCache() error {
+	list, total, err := articleService.queryHotArticles()
+	if err != nil {
+		return err
+	}
+
+	return articleService.setHotArticleCache(list, total)
+}
+
+// ArticleHot 获取首页热门文章：优先读 Redis 缓存，未命中再回源 ES 并顺手写回
+//
+// 定期刷新由 task.UpdateHotArticlesCacheTask 负责，这里的回源是为了自愈：
+// 服务刚启动、Redis 被清空、或定时任务失效时，第一个请求会重建缓存。
+func (articleService *ArticleService) ArticleHot() (interface{}, int64, error) {
+	if list, total, ok := articleService.getHotArticleFromCache(); ok {
+		return list, total, nil
+	}
+
+	list, total, err := articleService.queryHotArticles()
+	if err != nil {
+		return nil, 0, err
+	}
+
+	if err := articleService.setHotArticleCache(list, total); err != nil {
+		// 写缓存失败不影响本次返回
+		global.Log.Error("Failed to warm hot article cache:", zap.Error(err))
+	}
+
+	return list, total, nil
 }
 
 func (articleService *ArticleService) ArticleCategory() ([]database.ArticleCategory, error) {
