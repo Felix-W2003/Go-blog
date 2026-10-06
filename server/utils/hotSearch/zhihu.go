@@ -2,7 +2,6 @@ package hotSearch
 
 import (
 	"errors"
-	"fmt"
 	"io"
 	"net/http"
 	"regexp"
@@ -47,9 +46,9 @@ func (*Zhihu) GetHotSearchData(maxNum int) (other.HotSearchData, error) {
 			Index:       i + 1,
 			Title:       gjson.Get(jsonStr, "initialState.topstory.hotList."+strconv.Itoa(i)+".target.titleArea.text").Str,
 			Description: gjson.Get(jsonStr, "initialState.topstory.hotList."+strconv.Itoa(i)+".target.excerptArea.text").Str,
-			Image:       fmt.Sprintf(gjson.Get(jsonStr, "initialState.topstory.hotList."+strconv.Itoa(i)+".target.imageArea.url").Str),
+			Image:       gjson.Get(jsonStr, "initialState.topstory.hotList."+strconv.Itoa(i)+".target.imageArea.url").Str,
 			Popularity:  gjson.Get(jsonStr, "initialState.topstory.hotList."+strconv.Itoa(i)+".target.metricsArea.text").Str,
-			URL:         fmt.Sprintf(gjson.Get(jsonStr, "initialState.topstory.hotList."+strconv.Itoa(i)+".target.link.url").Str),
+			URL:         gjson.Get(jsonStr, "initialState.topstory.hotList."+strconv.Itoa(i)+".target.link.url").Str,
 		})
 	}
 
