@@ -2,7 +2,6 @@ package utils
 
 import (
 	"errors"
-	"fmt"
 	"server/global"
 	"server/model/request"
 	"time"
@@ -30,18 +29,21 @@ func NewJWT() *JWT {
 		RefreshTokenSecret: []byte(global.Config.Jwt.RefreshTokenSecret), // 从全局配置加载 RefreshToken 密钥
 	}
 }
+func (j *JWT) CreateJti() string {
+	jti := uuid.Must(uuid.NewV4()).String()
+	return jti
+}
 
 // CreateAccessClaims 创建 Access Token 的 Claims，包含基本信息和过期时间等
-func (j *JWT) CreateAccessClaims(baseClaims request.BaseClaims) request.JwtCustomClaims {
+func (j *JWT) CreateAccessClaims(baseClaims request.BaseClaims, jti string) request.JwtCustomClaims {
 	ep, _ := ParseDuration(global.Config.Jwt.AccessTokenExpiryTime) // 获取过期时间
-	fmt.Println("-------过期时间是", ep)
 	claims := request.JwtCustomClaims{
 		BaseClaims: baseClaims, // 基本 Claims
 		RegisteredClaims: jwt.RegisteredClaims{
 			Audience:  jwt.ClaimStrings{"TAP"},                // 受众
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(ep)), // 过期时间
 			Issuer:    global.Config.Jwt.Issuer,               // 签名的发行者
-			ID:        uuid.Must(uuid.NewV4()).String(),
+			ID:        jti,
 		},
 	}
 	return claims
@@ -54,7 +56,7 @@ func (j *JWT) CreateAccessToken(claims request.JwtCustomClaims) (string, error) 
 }
 
 // CreateRefreshClaims 创建 Refresh Token 的 Claims，包含用户信息和过期时间等
-func (j *JWT) CreateRefreshClaims(baseClaims request.BaseClaims) request.JwtCustomRefreshClaims {
+func (j *JWT) CreateRefreshClaims(baseClaims request.BaseClaims, jti string) request.JwtCustomRefreshClaims {
 	ep, _ := ParseDuration(global.Config.Jwt.RefreshTokenExpiryTime) // 获取过期时间
 	claims := request.JwtCustomRefreshClaims{
 		UserID: baseClaims.UserID, // 用户 ID
@@ -62,7 +64,7 @@ func (j *JWT) CreateRefreshClaims(baseClaims request.BaseClaims) request.JwtCust
 			Audience:  jwt.ClaimStrings{"TAP"},                // 受众
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(ep)), // 过期时间
 			Issuer:    global.Config.Jwt.Issuer,               // 签名的发行者
-			ID:        uuid.Must(uuid.NewV4()).String(),
+			ID:        jti,
 		},
 	}
 	return claims
@@ -124,6 +126,8 @@ func (j *JWT) parseToken(tokenString string, claims jwt.Claims, secretKey interf
 	}
 	return nil, TokenInvalid // Token 无效，返回错误
 }
+
+//
 
 /*
 输入: tokenString = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMjN9.signature"

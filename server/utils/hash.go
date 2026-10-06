@@ -26,7 +26,7 @@ func MD5V(str []byte, b ...byte) string {
 	return hex.EncodeToString(h.Sum(b))
 }
 
-func JwtBlacklistKey(jwt string) string {
-	h := sha256.Sum256([]byte(jwt))
-	return "jwt:blacklist:" + hex.EncodeToString(h[:])
+func JtiSHA256(jti string) string {
+	h := sha256.Sum256([]byte(jti))
+	return hex.EncodeToString(h[:])
 }

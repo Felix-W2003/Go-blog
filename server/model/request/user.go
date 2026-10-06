@@ -48,7 +48,8 @@ type UserList struct {
 }
 
 type UserOperation struct {
-	ID uint `json:"id" binding:"required"`
+	ID   uint   `json:"id" binding:"required"`
+	UUID string `json:"uuid" binding:"required"`
 }
 
 type UserLoginList struct {

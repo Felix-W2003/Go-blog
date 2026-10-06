@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"server/config"
 	"server/global"
 	"server/model/appTypes"
@@ -67,6 +68,18 @@ func (configService *ConfigService) UpdateQiniu(qiniu config.Qiniu) error {
 }
 
 func (configService *ConfigService) UpdateJwt(jwt config.Jwt) error {
+	refreshExp, err := utils.ParseDuration(jwt.RefreshTokenExpiryTime)
+	if err != nil || refreshExp <= 0 {
+		return errors.New("refresh_token_expiry_time 格式非法（示例：7d、2h、30m）")
+	}
+	accessExp, err := utils.ParseDuration(jwt.AccessTokenExpiryTime)
+	if err != nil || accessExp <= 0 {
+		return errors.New("access_token_expiry_time 格式非法（示例：7d、2h、30m）")
+	}
+	// 空密钥 = []byte("") 是合法的 HMAC key，等于谁都能伪造任意身份的 Token
+	if jwt.AccessTokenSecret == "" || jwt.RefreshTokenSecret == "" {
+		return errors.New("令牌密钥不能为空")
+	}
 	global.Config.Jwt = jwt
 	return utils.SaveYAML()
 }

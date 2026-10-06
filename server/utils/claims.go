@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"fmt"
+	"errors"
 	"net"
 	"server/global"
 	"server/model/appTypes"
@@ -48,7 +48,6 @@ func setCookie(c *gin.Context, name, value string, maxAge int, host string) {
 
 // GetAccessToken 从请求头获取Access Token
 func GetAccessToken(c *gin.Context) string {
-	fmt.Println("--------c.Request:", c.Request, "-------")
 	// 获取x-access-token头部值
 	token := c.Request.Header.Get("x-access-token")
 	return token
@@ -59,6 +58,20 @@ func GetRefreshToken(c *gin.Context) string {
 	// 尝试从cookie中获取refresh-token
 	token, _ := c.Cookie("x-refresh-token")
 	return token
+}
+
+// GetJti 从cookie获取Refresh Token的jti
+func GetJti(c *gin.Context) (string, error) {
+	refreshToken, _ := c.Cookie("x-refresh-token")
+	if refreshToken == "" {
+		return "", errors.New("x-refresh-token 不存在")
+	}
+	refreshClaims, err := NewJWT().ParseRefreshToken(refreshToken)
+	if err != nil {
+		return "", err
+	}
+	return refreshClaims.ID, nil
+
 }
 
 // GetClaims 从Gin的Context中解析并获取JWT的Claims

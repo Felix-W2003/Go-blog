@@ -19,7 +19,7 @@
               <el-input @change="updateJwtInfo" v-model="jwtInfo.access_token_expiry_time"/>
             </el-form-item>
             <el-form-item label="刷新令牌密钥">
-              <el-input @change="updateJwtInfo" v-model.number="jwtInfo.refresh_token_secret" type="password"
+              <el-input @change="updateJwtInfo" v-model="jwtInfo.refresh_token_secret" type="password"
                         show-password/>
             </el-form-item>
             <el-form-item label="刷新令牌过期时间">

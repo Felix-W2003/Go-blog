@@ -14,6 +14,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gofrs/uuid"
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
@@ -105,12 +106,40 @@ func (userService *UserService) UserCard(req request.UserCard) (response.UserCar
 
 func (userService *UserService) Logout(c *gin.Context) {
 	uuid := utils.GetUUID(c)
-	jwtStr := utils.GetRefreshToken(c)
+
+	var (
+		jti          string
+		blacklistTTL time.Duration
+	)
+
+	// 兜底来源：Access Token。JWTAuth 已经校验过它，claims 一定在 context 里。
+	// Access / Refresh 共享同一个 jti，所以即使 Refresh Cookie 丢了也能拉黑当前令牌。
+	if claims := utils.GetUserInfo(c); claims != nil && claims.ExpiresAt != nil {
+		jti = claims.ID
+		blacklistTTL = time.Until(claims.ExpiresAt.Time)
+	}
+
+	// 首选来源：Refresh Token，它的剩余有效期更长，覆盖更彻底
+	if refreshClaims, err := utils.GetRefreshClaims(c); err != nil {
+		global.Log.Warn("登出时 x-refresh-token 不可用，改用 Access Token 的 jti 兜底", zap.Error(err))
+	} else {
+		jti = refreshClaims.ID
+		blacklistTTL = utils.ParseRefreshExp(refreshClaims.ExpiresAt)
+	}
+
+	// 无论黑名单能不能写，都保证 Cookie 清掉、Redis 会话删掉，用户不会"退不出去"
 	utils.ClearRefreshToken(c)
 	global.Redis.Del(uuid.String())
-	_ = ServiceGroupApp.JwtService.JoinInBlacklist(database.JwtBlacklist{Jwt: jwtStr})
-}
 
+	if jti == "" || blacklistTTL <= 0 {
+		global.Log.Warn("登出时没有可用的 jti 或剩余有效期，跳过黑名单写入")
+		return
+	}
+
+	if err := ServiceGroupApp.JwtService.JoinInBlacklist(jti, blacklistTTL); err != nil {
+		global.Log.Error("登出写入黑名单失败", zap.Error(err))
+	}
+}
 func (userService *UserService) UserResetPassword(req request.UserResetPassword) error {
 	var user database.User
 	if err := global.DB.Take(&user, req.UserID).Error; err != nil {
@@ -213,17 +242,26 @@ func (userService *UserService) UserFreeze(req request.UserOperation) error {
 	if err := global.DB.Take(&user, req.ID).Update("freeze", true).Error; err != nil {
 		return err
 	}
+	// ↓ 只有 Update 成功才会走到这里，OK
+	jti, _ := ServiceGroupApp.JwtService.GetRedisJWT(user.UUID)
+	exp, _ := global.Redis.TTL(user.UUID.String()).Result()
 
-	jwtStr, _ := ServiceGroupApp.JwtService.GetRedisJWT(user.UUID)
-	if jwtStr != "" {
-		_ = ServiceGroupApp.JwtService.JoinInBlacklist(database.JwtBlacklist{Jwt: jwtStr})
+	if jti != "" {
+		if err := ServiceGroupApp.JwtService.JoinInBlacklist(jti, exp); err != nil {
+			global.Log.Error("冻结用户时写入黑名单失败", zap.Uint("user_id", user.ID), zap.Error(err))
+		}
 	}
-
+	global.Redis.Del(user.UUID.String())
 	return nil
 }
 
 func (userService *UserService) UserUnfreeze(req request.UserOperation) error {
-	return global.DB.Take(&database.User{}, req.ID).Update("freeze", false).Error
+	var user database.User
+	if err := global.DB.Take(&user, req.ID).Update("freeze", false).Error; err != nil {
+		return err
+	}
+	global.Redis.Del(user.UUID.String())
+	return nil
 }
 
 func (userService *UserService) UserLoginList(info request.UserLoginList) (interface{}, int64, error) {

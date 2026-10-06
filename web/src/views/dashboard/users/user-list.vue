@@ -75,7 +75,7 @@
       </template>
       是否{{ userInfo.freeze === false ? "冻结" : "解冻" }}该用户：{{ userInfo.username }}
       <template #footer>
-        <el-button type="primary" @click="handleFreeze(userInfo.id,userInfo.freeze)">
+        <el-button type="primary" @click="handleFreeze(userInfo.id,userInfo.uuid,userInfo.freeze)">
           确定
         </el-button>
         <el-button @click="userFreezeVisible = false">取消</el-button>
@@ -188,9 +188,10 @@ let userInfo: User
 
 const userFreezeVisible = ref(false)
 
-const handleFreeze = async (id: number, freeze: boolean) => {
+const handleFreeze = async (id: number, uuid:string,freeze: boolean) => {
   const userOperationRequest: UserOperation = {
     id: id,
+    uuid:uuid
   }
   if (freeze) {
     const res = await userUnfreeze(userOperationRequest)

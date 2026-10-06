@@ -17,7 +17,6 @@ func SQL() error {
 		&database.FooterLink{},
 		&database.FriendLink{},
 		&database.Image{},
-		&database.JwtBlacklist{},
 		&database.Login{},
 		&database.User{},
 	)

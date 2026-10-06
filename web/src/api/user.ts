@@ -167,6 +167,7 @@ export const userList = (data: UserListRequest): Promise<ApiResponse<PageResult<
 
 export interface UserOperation {
     id: number;
+    uuid:string;
 }
 
 export const userFreeze = (data: UserOperation): Promise<ApiResponse<undefined>> => {

@@ -5,6 +5,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/golang-jwt/jwt/v4"
 )
 
 // ParseDuration 解析持续时间字符串为 time.Duration。
@@ -56,4 +58,16 @@ func ParseDuration(d string) (time.Duration, error) {
 
 	// 返回总的持续时间
 	return totalDuration, nil
+}
+
+// 解析jwt过期时间，传入绝对时间戳，返回还剩多少（相对时间）
+func ParseRefreshExp(expireRefreshTime *jwt.NumericDate) time.Duration {
+	expireTime, _ := time.Parse("2006-01-02 15:04:05 -0700 MST", expireRefreshTime.String())
+	expireTs := expireTime.Unix() //秒级时间戳
+
+	now := time.Now().Unix()
+	remainTime := expireTs - now
+	remainDur := time.Duration(remainTime) * time.Second
+	return remainDur
+
 }

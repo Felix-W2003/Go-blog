@@ -2,7 +2,6 @@ package api
 
 import (
 	"errors"
-	"fmt"
 	"server/global"
 	"server/model/database"
 	"server/model/request"
@@ -65,7 +64,6 @@ func (userApi *UserApi) Register(c *gin.Context) {
 
 // Login 登录接口，根据不同的登录方式调用不同的登录方法
 func (userApi *UserApi) Login(c *gin.Context) {
-	fmt.Println("这是gin", c)
 	switch c.Query("flag") {
 	case "email":
 		userApi.EmailLogin(c)
@@ -144,9 +142,10 @@ func (userApi *UserApi) TokenNext(c *gin.Context, user database.User) {
 	}
 
 	j := utils.NewJWT()
+	jti := j.CreateJti() // 复用同一个 JWT 实例生成 jti
 
 	// 创建访问令牌
-	accessClaims := j.CreateAccessClaims(baseClaims)
+	accessClaims := j.CreateAccessClaims(baseClaims, jti)
 	accessToken, err := j.CreateAccessToken(accessClaims)
 	if err != nil {
 		global.Log.Error("Failed to get accessToken:", zap.Error(err))
@@ -155,7 +154,7 @@ func (userApi *UserApi) TokenNext(c *gin.Context, user database.User) {
 	}
 
 	// 创建刷新令牌
-	refreshClaims := j.CreateRefreshClaims(baseClaims)
+	refreshClaims := j.CreateRefreshClaims(baseClaims, jti)
 	refreshToken, err := j.CreateRefreshToken(refreshClaims)
 	if err != nil {
 		global.Log.Error("Failed to get refreshToken:", zap.Error(err))
@@ -163,66 +162,72 @@ func (userApi *UserApi) TokenNext(c *gin.Context, user database.User) {
 		return
 	}
 
-	// 是否开启了多地点登录拦截
+	// 未开启多地点登录拦截，直接返回
 	if !global.Config.System.UseMultipoint {
-		// 设置刷新令牌并返回
-		utils.SetRefreshToken(c, refreshToken, int(refreshClaims.ExpiresAt.Unix()-time.Now().Unix()))
-		c.Set("user_id", user.ID)
-		response.OkWithDetailed(response.Login{
-			User:                 user,
-			AccessToken:          accessToken,
-			AccessTokenExpiresAt: accessClaims.ExpiresAt.Unix() * 1000,
-		}, "Successful login", c)
+		userApi.respondWithLogin(c, user, accessToken, accessClaims, refreshToken, refreshClaims)
 		return
 	}
 
-	// 检查 Redis 中是否已存在该用户的 JWT
-	if jwtStr, err := jwtService.GetRedisJWT(user.UUID); errors.Is(err, redis.Nil) {
-		// 不存在就设置新的
-		if err := jwtService.SetRedisJWT(refreshToken, user.UUID); err != nil {
+	// 查询该用户当前活跃会话的 jti
+	oldJti, err := jwtService.GetRedisJWT(user.UUID)
+	switch {
+	case errors.Is(err, redis.Nil):
+		// 首次登录（Redis 中不存在该用户的会话）
+		if err := jwtService.SetRedisJWT(refreshClaims.ID, user.UUID); err != nil {
 			global.Log.Error("Failed to set login status:", zap.Error(err))
 			response.FailWithMessage("Failed to set login status", c)
 			return
 		}
+		userApi.respondWithLogin(c, user, accessToken, accessClaims, refreshToken, refreshClaims)
 
-		// 设置刷新令牌并返回
-		utils.SetRefreshToken(c, refreshToken, int(refreshClaims.ExpiresAt.Unix()-time.Now().Unix()))
-		c.Set("user_id", user.ID)
-		response.OkWithDetailed(response.Login{
-			User:                 user,
-			AccessToken:          accessToken,
-			AccessTokenExpiresAt: accessClaims.ExpiresAt.Unix() * 1000,
-		}, "Successful login", c)
-	} else if err != nil {
-		// 出现错误处理
-		global.Log.Error("Failed to set login status:", zap.Error(err))
-		response.FailWithMessage("Failed to set login status", c)
-	} else {
-		// Redis 中已存在该用户的 JWT，将旧的 JWT 加入黑名单，并设置新的 token
-		var blacklist database.JwtBlacklist
-		blacklist.Jwt = jwtStr
-		if err := jwtService.JoinInBlacklist(blacklist); err != nil {
+	case err != nil:
+		// Redis 查询出错
+		global.Log.Error("Failed to get login status:", zap.Error(err))
+		response.FailWithMessage("Failed to get login status", c)
+
+	default:
+		// 已存在活跃会话，踢掉旧会话，写入新会话
+		// 旧会话的剩余寿命 = Redis 中 uuid 这个 key 的 TTL（它正是按旧的 Refresh 有效期写入的），
+		// 必须在下面 SetRedisJWT 覆盖它之前读取，否则读到的就是新会话的寿命
+		oldTTL, ttlErr := global.Redis.TTL(user.UUID.String()).Result()
+		if ttlErr != nil {
+			global.Log.Warn("读取旧会话剩余有效期失败，改用黑名单默认有效期", zap.Error(ttlErr))
+			oldTTL = 0 // 交给 JoinInBlacklist 用配置里的 Refresh 有效期兜底
+		}
+
+		if err := jwtService.JoinInBlacklist(oldJti, oldTTL); err != nil {
 			global.Log.Error("Failed to invalidate jwt:", zap.Error(err))
 			response.FailWithMessage("Failed to invalidate jwt", c)
 			return
 		}
 
-		// 设置新的 JWT 到 Redis
-		if err := jwtService.SetRedisJWT(refreshToken, user.UUID); err != nil {
+		if err := jwtService.SetRedisJWT(refreshClaims.ID, user.UUID); err != nil {
 			global.Log.Error("Failed to set login status:", zap.Error(err))
 			response.FailWithMessage("Failed to set login status", c)
 			return
 		}
 
-		// 设置刷新令牌并返回
-		utils.SetRefreshToken(c, refreshToken, int(refreshClaims.ExpiresAt.Unix()-time.Now().Unix()))
-		c.Set("user_id", user.ID)
-		response.OkWithDetailed(response.Login{
-			User:                 user,
-			AccessToken:          accessToken,
-			AccessTokenExpiresAt: accessClaims.ExpiresAt.Unix() * 1000,
-		}, "Successful login", c)
+		userApi.respondWithLogin(c, user, accessToken, accessClaims, refreshToken, refreshClaims)
 	}
+}
+
+// respondWithLogin 设置刷新令牌并返回登录成功响应，供 TokenNext 各分支复用
+func (userApi *UserApi) respondWithLogin(
+	c *gin.Context,
+	user database.User,
+	accessToken string,
+	accessClaims request.JwtCustomClaims,
+	refreshToken string,
+	refreshClaims request.JwtCustomRefreshClaims,
+) {
+	ttl := int(refreshClaims.ExpiresAt.Unix() - time.Now().Unix())
+	utils.SetRefreshToken(c, refreshToken, ttl)
+	c.Set("user_id", user.ID)
+	response.OkWithDetailed(response.Login{
+		User:                 user,
+		AccessToken:          accessToken,
+		AccessTokenExpiresAt: accessClaims.ExpiresAt.Unix() * 1000,
+	}, "Successful login", c)
 }
 
 // ForgotPassword 找回密码
@@ -304,8 +309,9 @@ func (userApi *UserApi) UserResetPassword(c *gin.Context) {
 		response.FailWithMessage("Failed to modify, orginal password does not match the current account", c)
 		return
 	}
-	response.OkWithMessage("Successfully changed password, please log in again", c)
+
 	userService.Logout(c)
+	response.OkWithMessage("Successfully changed password, please log in again", c)
 }
 
 // UserInfo 获取个人信息
@@ -397,6 +403,7 @@ func (userApi *UserApi) UserFreeze(c *gin.Context) {
 		response.FailWithMessage(err.Error(), c)
 		return
 	}
+
 	err = userService.UserFreeze(req)
 	if err != nil {
 		global.Log.Error("Failed to freeze user:", zap.Error(err))
